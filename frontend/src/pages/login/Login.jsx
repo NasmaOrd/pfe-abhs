@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // Envoi des données au backend pour validation
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post("https://pfe-abhs.vercel.app/api/auth/login", {
         email,
         password,
       });
