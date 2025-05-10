@@ -10,6 +10,8 @@ import tempfile
 import io
 import sys
 import io
+import os
+
 
 # Configuration de la page
 st.set_page_config(page_title="ABHS - Explorateur de Données", layout="wide")
@@ -22,7 +24,7 @@ menu = ["Accueil", "Visualisation", "Prédiction", "Exécuter du Code"]
 page = st.sidebar.selectbox("Sélectionnez une page", menu)
 
 # Simuler le fichier Excel reçu
-uploaded_file = "./outputof_AIN SEBOU.xlsx"
+uploaded_file = os.path.join(os.path.dirname(__file__), 'assets', 'outputof_AIN SEBOU.xlsx')
 
 # Logique en fonction de la page sélectionnée
 if page == "Accueil":
