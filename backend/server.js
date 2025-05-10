@@ -21,6 +21,10 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Nasma API Marche :)!");
+}); 
+
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('MongoDB connected');
