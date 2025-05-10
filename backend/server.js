@@ -6,25 +6,45 @@ const authRoutes = require('./routes/auth');
 dotenv.config();  
 
 const app = express();
+
+// ✅ CORS configuré correctement
+const allowedOrigins = [
+  'https://pfe-abhs.vercel.app',
+  'https://pfe-abhs.web.app',
+  'http://localhost:3000' // (utile pour tests locaux)
+];
+
 app.use(cors({
-  origin: 'https://pfe-abhs.vercel.app/', // Permet uniquement le frontend sur localhost:3000
-  methods: ['GET', 'POST'], // Méthodes HTTP autorisées
-  allowedHeaders: ['Content-Type', 'Authorization'], // En-têtes autorisés
+  origin: function (origin, callback) {
+    // Autorise requêtes sans origine (ex: Postman) ou si dans la liste
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Autorise toutes les origines
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
+
+// ❌ Supprimé l'ancien middleware générique qui causait conflit
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   next();
+// });
+
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 
+// ✅ Route de test
 app.get("/", (req, res) => {
   res.send("Nasma API Marche :)!");
 }); 
 
+// ✅ Connexion MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('MongoDB connected');
@@ -33,4 +53,3 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     });
   })
   .catch((err) => console.log('MongoDB connection error:', err));
-
