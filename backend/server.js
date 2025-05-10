@@ -41,7 +41,7 @@ app.use('/api/auth', authRoutes);
 
 // ✅ Route de test
 app.get("/", (req, res) => {
-  res.send("Nasma API Marche :)!");
+  res.send("");
 }); 
 
 // ✅ Connexion MongoDB
