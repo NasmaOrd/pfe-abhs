@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:3000', // Permet uniquement le frontend sur localhost:3000
+  origin: 'https://pfe-abhs.vercel.app/', // Permet uniquement le frontend sur localhost:3000
   methods: ['GET', 'POST'], // Méthodes HTTP autorisées
   allowedHeaders: ['Content-Type', 'Authorization'], // En-têtes autorisés
 }));
