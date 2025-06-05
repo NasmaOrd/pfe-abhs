@@ -59,7 +59,7 @@ const Analyses = () => {
         <Navbar />
 
         {/* Titre de la page */}
-        <h2>Analyses Mensuelles</h2>
+        <h2><span>Analyses</span> Mensuelles</h2>
 
         {/* Grille contenant les graphiques */}
         <div className="chartGrid">

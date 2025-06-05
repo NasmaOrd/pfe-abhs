@@ -71,6 +71,7 @@ const Data = () => {
         {/* Barre de navigation en haut */}
         <Navbar />
 
+données
         {/* Section d'upload de fichier */}
         <div className="uploadSection">
           <input
