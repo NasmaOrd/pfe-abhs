@@ -1,0 +1,21 @@
+.stations {
+  display: flex;
+
+  .stationsContainer {
+    flex: 6;
+    padding: 20px;
+
+    .stationCard {
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .stationTitle {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+  }
+}

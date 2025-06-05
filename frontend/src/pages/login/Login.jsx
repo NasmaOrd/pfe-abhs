@@ -12,18 +12,16 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Envoi des données au backend pour validation
       const response = await axios.post("https://pfe-abhs.vercel.app/api/auth/login", {
         email,
         password,
       });
 
-      // Si la connexion est réussie, on récupère le token et on le stocke
       const { token } = response.data;
       localStorage.setItem("authToken", token);
 
-      // Rediriger vers la page d'accueil ou une page protégée
-      navigate("/"); // Utilisation de navigate pour la redirection
+
+      navigate("/"); 
     } catch (error) {
       setError("Erreur de connexion. Vérifiez vos informations.");
     }

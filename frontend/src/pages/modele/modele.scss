@@ -1,0 +1,28 @@
+.modele {
+  display: flex;
+
+  .modeleContainer {
+    flex: 6;
+    padding: 20px;
+
+    .modelForm {
+      background-color: #fafafa;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .formRow {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .modelResult {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e0f7fa;
+      border-radius: 10px;
+    }
+  }
+}

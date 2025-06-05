@@ -1,0 +1,50 @@
+.data {
+  display: flex;
+
+  .dataContainer {
+    flex: 6;
+    padding: 20px;
+
+    .uploadSection {
+      margin-bottom: 20px;
+
+      input {
+        padding: 8px;
+        margin-right: 10px;
+      }
+
+      button {
+        padding: 8px 12px;
+        background-color: #1976d2;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+    }
+
+    .filePreview {
+      max-height: 500px;
+      overflow: auto;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th, td {
+          border: 1px solid #ccc;
+          padding: 8px;
+          text-align: left;
+        }
+
+        th {
+          background-color: #f0f0f0;
+        }
+
+        tr:nth-child(even) {
+          background-color: #fafafa;
+        }
+      }
+    }
+  }
+}
