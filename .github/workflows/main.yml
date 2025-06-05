@@ -21,9 +21,10 @@ jobs:
       - name: Install dependencies (root)
         run: npm install
 
-      - name: Generate frontend
+      - name: Generate Documentation
         run: |
-          npm run doc:frontend
+          npm install jsdoc
+          jsdoc -c jsdoc-frontend.json
 
       - name: Install dependencies (frontend)
         run: |
