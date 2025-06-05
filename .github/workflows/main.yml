@@ -1,4 +1,4 @@
-name: Deploy React Frontend to Firebase Hosting
+name: Build, Generate Docs and Deploy React Frontend to Firebase Hosting
 
 on:
   push:
@@ -18,7 +18,14 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install dependencies (root)
+        run: npm install
+
+      - name: Generate frontend
+        run: |
+          npm run doc:frontend
+
+      - name: Install dependencies (frontend)
         run: |
           cd frontend
           npm install
