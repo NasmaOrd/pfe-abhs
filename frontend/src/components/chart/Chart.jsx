@@ -8,6 +8,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+/**
+ * Données mensuelles des précipitations (en mm).
+ * Chaque objet représente un mois de l'année hydrologique.
+ * @type {{ name: string, Precipitations: number }[]}
+ */
 const data = [
   { name: "Sept", Precipitations: 70 },
   { name: "Oct", Precipitations: 110 },
@@ -19,6 +24,15 @@ const data = [
   { name: "Avr", Precipitations: 60 },
 ];
 
+/**
+ * Composant React affichant une courbe des précipitations mensuelles.
+ *
+ * @component
+ * @param {Object} props - Propriétés du composant.
+ * @param {number} props.aspect - Ratio largeur/hauteur du graphique (ex: 2).
+ * @param {string} props.title - Titre à afficher au-dessus du graphique (non utilisé ici directement).
+ * @returns {JSX.Element} Un graphique de type AreaChart avec les précipitations mensuelles.
+ */
 const Chart = ({ aspect, title }) => {
   return (
     <div className="chart">

@@ -14,11 +14,40 @@ import "./style/dark.scss";
 import { useContext, useState, useEffect } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 
-// Vérifie si l'utilisateur est authentifié
+/**
+ * @file App.jsx
+ * @description
+ * Application web React pour la gestion des données hydrologiques et pluviométriques,
+ * incluant des pages d'analyse, de gestion des utilisateurs, des produits, des stations,
+ * et des données importées.
+ * 
+ * Fonctionnalités principales :
+ * - Authentification basique via un token stocké dans localStorage.
+ * - Mode sombre / clair via contexte React.
+ * - Navigation protégée par authentification avec redirections conditionnelles.
+ * - Gestion des routes pour utilisateurs, produits, analyses, données et autres modules.
+ * 
+ * Technologies utilisées :
+ * - React avec React Router pour le routage.
+ * - Contexte React pour le mode sombre.
+ * - Stockage local pour la gestion d'authentification.
+ */
+
+/**
+ * Vérifie si un utilisateur est authentifié
+ * 
+ * @returns {boolean} true si un token d'authentification est présent dans localStorage, false sinon
+ */
 const isAuthenticated = () => {
   return !!localStorage.getItem("authToken");
 };
 
+/**
+ * Composant principal de l'application
+ * 
+ * @component
+ * @returns {JSX.Element} L'application React avec le système de routage et d'authentification
+ */
 function App() {
   const { darkMode } = useContext(DarkModeContext);
   const [auth, setAuth] = useState(isAuthenticated());
@@ -38,21 +67,21 @@ function App() {
             {/* Page de login */}
             <Route path="login" element={auth ? <Navigate to="/" /> : <Login />} />
 
-            {/* Utilisateurs */}
+            {/* Gestion des utilisateurs */}
             <Route path="users">
               <Route index element={auth ? <List /> : <Navigate to="/login" />} />
               <Route path=":userId" element={auth ? <Single /> : <Navigate to="/login" />} />
               <Route path="new" element={auth ? <New inputs={userInputs} /> : <Navigate to="/login" />} />
             </Route>
 
-            {/* Produits */}
+            {/* Gestion des produits */}
             <Route path="products">
               <Route index element={auth ? <List /> : <Navigate to="/login" />} />
               <Route path=":productId" element={auth ? <Single /> : <Navigate to="/login" />} />
               <Route path="new" element={auth ? <New inputs={productInputs} title="Add New Product" /> : <Navigate to="/login" />} />
             </Route>
 
-            {/* Routes personnalisées */}
+            {/* Routes personnalisées pour les modules spécifiques */}
             <Route path="data" element={auth ? <Data /> : <Navigate to="/login" />} />
             <Route path="stations" element={auth ? <Stations /> : <Navigate to="/login" />} />
             <Route path="analyses" element={auth ? <Analyses /> : <Navigate to="/login" />} />

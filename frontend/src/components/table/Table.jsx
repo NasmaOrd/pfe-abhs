@@ -1,4 +1,4 @@
-import "./table.scss";
+import "./table.scss"; // Styles spécifiques à ce composant tableau
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,7 +7,16 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
+/**
+ * Composant List affichant un tableau de stations météo.
+ * Chaque ligne contient des informations sur une station, son observateur,
+ * les précipitations mesurées, la méthode utilisée et le statut de validation.
+ *
+ * @component
+ * @returns {JSX.Element} Un tableau complet des données météo.
+ */
 const List = () => {
+  // Données simulées représentant plusieurs stations météo
   const rows = [
     {
       id: "ST-0001",
@@ -63,7 +72,9 @@ const List = () => {
 
   return (
     <TableContainer component={Paper} className="table">
+      {/* Table Material UI avec un label accessible */}
       <Table sx={{ minWidth: 650 }} aria-label="table de données météo">
+        {/* En-tête du tableau */}
         <TableHead>
           <TableRow>
             <TableCell className="tableCell">ID Station</TableCell>
@@ -75,13 +86,16 @@ const List = () => {
             <TableCell className="tableCell">Statut</TableCell>
           </TableRow>
         </TableHead>
+
+        {/* Corps du tableau */}
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell className="tableCell">{row.id}</TableCell>
               <TableCell className="tableCell">
+                {/* Affichage de l'image et du nom de la station côte à côte */}
                 <div className="cellWrapper">
-                  <img src={row.img} alt={row.station} className="image" />
+                  <img src={row.img} alt={`Image de ${row.station}`} className="image" />
                   {row.station}
                 </div>
               </TableCell>
@@ -90,6 +104,7 @@ const List = () => {
               <TableCell className="tableCell">{row.amount}</TableCell>
               <TableCell className="tableCell">{row.method}</TableCell>
               <TableCell className="tableCell">
+                {/* Statut avec coloration dynamique selon validation */}
                 <span className={`status ${row.status === "Validé" ? "Approved" : "Pending"}`}>
                   {row.status}
                 </span>

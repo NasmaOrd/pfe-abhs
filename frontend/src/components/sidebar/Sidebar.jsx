@@ -16,24 +16,38 @@ import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 
+/**
+ * Composant Sidebar représentant la barre latérale de navigation.
+ * Contient des liens vers différentes sections de l'application AHBS.
+ * Permet également de changer le thème (clair/sombre).
+ *
+ * @component
+ * @returns {JSX.Element} La barre latérale de l'application.
+ */
 const Sidebar = () => {
-  const { dispatch } = useContext(DarkModeContext);
+  const { dispatch } = useContext(DarkModeContext); // Accès à la gestion du mode sombre
+
   return (
     <div className="sidebar">
+      {/* Logo en haut */}
       <div className="top">
         <Link to="/" style={{ textDecoration: "none" }}>
           <span className="logo">AHBS </span>
         </Link>
       </div>
       <hr />
+
+      {/* Section centrale contenant les menus */}
       <div className="center">
         <ul>
+          {/* Section PRINCIPAL */}
           <p className="title">PRINCIPAL</p>
           <li>
             <DashboardIcon className="icon" />
             <span>Tableau de bord</span>
           </li>
 
+          {/* Section GESTION */}
           <p className="title">GESTION</p>
           <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
@@ -66,6 +80,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
+          {/* Section UTILITAIRE */}
           <p className="title">UTILITAIRE</p>
           <li>
             <InsightsIcon className="icon" />
@@ -76,6 +91,7 @@ const Sidebar = () => {
             <span>Alertes</span>
           </li>
 
+          {/* Section SYSTÈME */}
           <p className="title">SYSTÈME</p>
           <li>
             <SensorsIcon className="icon" />
@@ -90,6 +106,7 @@ const Sidebar = () => {
             <span>Paramètres</span>
           </li>
 
+          {/* Section UTILISATEUR */}
           <p className="title">UTILISATEUR</p>
           <li>
             <AccountCircleOutlinedIcon className="icon" />
@@ -101,9 +118,17 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
+
+      {/* Choix du thème (clair ou sombre) */}
       <div className="bottom">
-        <div className="colorOption" onClick={() => dispatch({ type: "LIGHT" })}></div>
-        <div className="colorOption" onClick={() => dispatch({ type: "DARK" })}></div>
+        <div
+          className="colorOption"
+          onClick={() => dispatch({ type: "LIGHT" })}
+        ></div>
+        <div
+          className="colorOption"
+          onClick={() => dispatch({ type: "DARK" })}
+        ></div>
       </div>
     </div>
   );

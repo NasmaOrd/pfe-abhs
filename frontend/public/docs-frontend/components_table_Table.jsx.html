@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>components/table/Table.jsx - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">components/table/Table.jsx</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./table.scss"; // Styles spécifiques à ce composant tableau
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+
+/**
+ * Composant List affichant un tableau de stations météo.
+ * Chaque ligne contient des informations sur une station, son observateur,
+ * les précipitations mesurées, la méthode utilisée et le statut de validation.
+ *
+ * @component
+ * @returns {JSX.Element} Un tableau complet des données météo.
+ */
+const List = () => {
+  // Données simulées représentant plusieurs stations météo
+  const rows = [
+    {
+      id: "ST-0001",
+      station: "Station Aïn Sebaâ",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Weather_station.jpg/320px-Weather_station.jpg",
+      observer: "Youssef El Idrissi",
+      date: "28 Avril",
+      amount: 42,
+      method: "Pluviomètre manuel",
+      status: "Validé",
+    },
+    {
+      id: "ST-0002",
+      station: "Station Kénitra",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Meteorological_station_-_NOAA.jpg/320px-Meteorological_station_-_NOAA.jpg",
+      observer: "Salma Ait Omar",
+      date: "28 Avril",
+      amount: 18,
+      method: "Capteur automatique",
+      status: "En attente",
+    },
+    {
+      id: "ST-0003",
+      station: "Station Fès",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Automatic_weather_station.jpg/320px-Automatic_weather_station.jpg",
+      observer: "Nabil Hamdane",
+      date: "28 Avril",
+      amount: 55,
+      method: "Capteur automatique",
+      status: "Validé",
+    },
+    {
+      id: "ST-0004",
+      station: "Station Oujda",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Weather_station_piedmont.jpg/320px-Weather_station_piedmont.jpg",
+      observer: "Meryem Bekkali",
+      date: "28 Avril",
+      amount: 0,
+      method: "Pluviomètre manuel",
+      status: "En attente",
+    },
+    {
+      id: "ST-0005",
+      station: "Station Settat",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Weather_station.jpg/320px-Weather_station.jpg",
+      observer: "Rachid Khouya",
+      date: "28 Avril",
+      amount: 12,
+      method: "Capteur automatique",
+      status: "Validé",
+    },
+  ];
+
+  return (
+    &lt;TableContainer component={Paper} className="table">
+      {/* Table Material UI avec un label accessible */}
+      &lt;Table sx={{ minWidth: 650 }} aria-label="table de données météo">
+        {/* En-tête du tableau */}
+        &lt;TableHead>
+          &lt;TableRow>
+            &lt;TableCell className="tableCell">ID Station&lt;/TableCell>
+            &lt;TableCell className="tableCell">Station&lt;/TableCell>
+            &lt;TableCell className="tableCell">Observateur&lt;/TableCell>
+            &lt;TableCell className="tableCell">Date&lt;/TableCell>
+            &lt;TableCell className="tableCell">Précipitations (mm)&lt;/TableCell>
+            &lt;TableCell className="tableCell">Méthode&lt;/TableCell>
+            &lt;TableCell className="tableCell">Statut&lt;/TableCell>
+          &lt;/TableRow>
+        &lt;/TableHead>
+
+        {/* Corps du tableau */}
+        &lt;TableBody>
+          {rows.map((row) => (
+            &lt;TableRow key={row.id}>
+              &lt;TableCell className="tableCell">{row.id}&lt;/TableCell>
+              &lt;TableCell className="tableCell">
+                {/* Affichage de l'image et du nom de la station côte à côte */}
+                &lt;div className="cellWrapper">
+                  &lt;img src={row.img} alt={`Image de ${row.station}`} className="image" />
+                  {row.station}
+                &lt;/div>
+              &lt;/TableCell>
+              &lt;TableCell className="tableCell">{row.observer}&lt;/TableCell>
+              &lt;TableCell className="tableCell">{row.date}&lt;/TableCell>
+              &lt;TableCell className="tableCell">{row.amount}&lt;/TableCell>
+              &lt;TableCell className="tableCell">{row.method}&lt;/TableCell>
+              &lt;TableCell className="tableCell">
+                {/* Statut avec coloration dynamique selon validation */}
+                &lt;span className={`status ${row.status === "Validé" ? "Approved" : "Pending"}`}>
+                  {row.status}
+                &lt;/span>
+              &lt;/TableCell>
+            &lt;/TableRow>
+          ))}
+        &lt;/TableBody>
+      &lt;/Table>
+    &lt;/TableContainer>
+  );
+};
+
+export default List;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Jun 05 2025 16:55:07 GMT+0200 (heure d’été d’Europe centrale) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

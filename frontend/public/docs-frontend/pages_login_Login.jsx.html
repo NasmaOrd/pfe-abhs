@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>pages/login/Login.jsx - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">pages/login/Login.jsx</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./login.scss";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Hook pour la navigation en React Router v6
+
+/**
+ * Composant Login
+ * 
+ * Interface de connexion utilisateur.
+ * 
+ * Fonctionnalités :
+ * - Saisie de l'email et du mot de passe
+ * - Envoi d'une requête POST à l'API d'authentification
+ * - Gestion du token JWT retourné et stockage dans localStorage
+ * - Redirection vers la page d'accueil en cas de succès
+ * - Affichage d'un message d'erreur en cas d'échec
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} Composant React affichant le formulaire de connexion.
+ */
+const Login = () => {
+  // États pour gérer les inputs et le message d'erreur
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // Pour rediriger après connexion réussie
+
+  /**
+   * Gestionnaire de la soumission du formulaire de connexion.
+   * Envoie les identifiants à l'API, récupère le token JWT,
+   * le stocke dans localStorage, et redirige l'utilisateur.
+   * En cas d'erreur, affiche un message.
+   * 
+   * @param {React.FormEvent&lt;HTMLFormElement>} e - L'événement de soumission du formulaire
+   */
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Requête POST vers l'API d'authentification
+      const response = await axios.post("https://pfe-abhs.vercel.app/api/auth/login", {
+        email,
+        password,
+      });
+
+      // Récupération du token JWT retourné par le serveur
+      const { token } = response.data;
+
+      // Stockage du token dans localStorage pour les requêtes ultérieures
+      localStorage.setItem("authToken", token);
+
+      // Redirection vers la page d'accueil après connexion
+      navigate("/");
+    } catch (error) {
+      // En cas d'erreur, affichage d'un message à l'utilisateur
+      setError("Erreur de connexion. Vérifiez vos informations.");
+    }
+  };
+
+  return (
+    &lt;div className="login">
+      &lt;h2>Connexion&lt;/h2>
+
+      {/* Formulaire de connexion */}
+      &lt;form onSubmit={handleLogin}>
+        &lt;div>
+          &lt;label>Email :&lt;/label>
+          &lt;input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        &lt;/div>
+
+        &lt;div>
+          &lt;label>Mot de passe :&lt;/label>
+          &lt;input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        &lt;/div>
+
+        &lt;button type="submit">Se connecter&lt;/button>
+      &lt;/form>
+
+      {/* Affichage du message d'erreur s'il y en a un */}
+      {error &amp;&amp; &lt;p className="error">{error}&lt;/p>}
+    &lt;/div>
+  );
+};
+
+export default Login;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Jun 05 2025 16:55:07 GMT+0200 (heure d’été d’Europe centrale) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

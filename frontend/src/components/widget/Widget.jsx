@@ -5,13 +5,24 @@ import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
 import DeviceThermostatOutlinedIcon from "@mui/icons-material/DeviceThermostatOutlined";
 import RadarIcon from "@mui/icons-material/Radar";
 
+/**
+ * Composant Widget affichant un résumé statistique selon le type donné.
+ * Les types possibles sont : "employées", "stations", "precipitations", "humidite".
+ * Chaque widget affiche un titre, un chiffre, un lien et une icône personnalisée.
+ * 
+ * @component
+ * @param {Object} props
+ * @param {string} props.type - Type de widget à afficher
+ * @returns {JSX.Element} Un widget personnalisé avec icône et données
+ */
 const Widget = ({ type }) => {
   let data;
 
-  // Valeurs fictives à remplacer par des données dynamiques
+  // Valeurs fictives pour l'exemple : à remplacer par des données dynamiques
   const amount = 100;
   const diff = 20;
 
+  // Choix des données selon le type du widget
   switch (type) {
     case "employées":
       data = {
@@ -75,18 +86,28 @@ const Widget = ({ type }) => {
       };
       break;
     default:
+      data = {
+        title: "INCONNU",
+        isMoney: false,
+        link: "",
+        icon: null,
+      };
       break;
   }
 
   return (
     <div className="widget">
+      {/* Partie gauche du widget avec titre, chiffre et lien */}
       <div className="left">
         <span className="title">{data.title}</span>
         <span className="counter">
+          {/* Affiche le symbole monétaire si nécessaire */}
           {data.isMoney && "€"} {amount}
         </span>
         <span className="link">{data.link}</span>
       </div>
+
+      {/* Partie droite avec pourcentage d'évolution et icône */}
       <div className="right">
         <div className="percentage positive">
           <KeyboardArrowUpIcon />

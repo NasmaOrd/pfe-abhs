@@ -4,13 +4,33 @@ import { employeeColumns, employeeRows } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
+/**
+ * Composant React représentant une table de gestion des employés.
+ * Utilise MUI DataGrid pour afficher les données des employés avec actions personnalisées.
+ *
+ * @component
+ * @returns {JSX.Element} Une table interactive permettant de visualiser, ajouter et supprimer des employés.
+ */
 const Datatable = () => {
+  /**
+   * État local contenant les données des employés affichés.
+   * @type {[Array<Object>, Function]}
+   */
   const [data, setData] = useState(employeeRows);
 
+  /**
+   * Supprime un employé de la table en filtrant par ID.
+   *
+   * @param {number|string} id - L'identifiant de l'employé à supprimer.
+   */
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
 
+  /**
+   * Colonne d'actions personnalisée pour la table (voir / supprimer).
+   * @type {Array<Object>}
+   */
   const actionColumn = [
     {
       field: "action",

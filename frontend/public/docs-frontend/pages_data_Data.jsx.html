@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>pages/data/Data.jsx - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">pages/data/Data.jsx</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./data.scss";
+import Sidebar from "../../components/sidebar/Sidebar";
+import Navbar from "../../components/navbar/Navbar";
+import * as XLSX from "xlsx";
+import Papa from "papaparse";
+import { useState } from "react";
+
+/**
+ * Composant Data
+ * 
+ * Permet d'importer un fichier CSV ou Excel, d'en extraire les données,
+ * puis d'afficher ces données sous forme de tableau.
+ * 
+ * Fonctionnalités principales :
+ * - Upload d'un fichier CSV, XLSX ou XLS
+ * - Parsing des données via PapaParse (CSV) ou XLSX (Excel)
+ * - Affichage dynamique des colonnes et des lignes extraites
+ * 
+ * @component
+ * @returns {JSX.Element} Composant React pour l'import et la visualisation de données tabulaires
+ */
+const Data = () => {
+  // État pour stocker les données extraites du fichier (tableau d'objets)
+  const [tableData, setTableData] = useState([]);
+  // État pour stocker les noms de colonnes à afficher dans le tableau
+  const [columns, setColumns] = useState([]);
+
+  /**
+   * Gestionnaire d'import de fichier (CSV ou Excel)
+   * @param {React.ChangeEvent&lt;HTMLInputElement>} e - Événement de changement sur l'input fichier
+   */
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    if (file.name.endsWith(".csv")) {
+      // Lecture et parsing du CSV via PapaParse
+      reader.onload = (event) => {
+        const parsed = Papa.parse(event.target.result, {
+          header: true,
+          skipEmptyLines: true,
+        });
+        setTableData(parsed.data);
+        setColumns(Object.keys(parsed.data[0] || {}));
+      };
+      reader.readAsText(file);
+    } else if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
+      // Lecture du fichier Excel avec XLSX
+      reader.onload = (event) => {
+        const workbook = XLSX.read(event.target.result, { type: "binary" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+        setTableData(jsonData);
+        setColumns(Object.keys(jsonData[0] || {}));
+      };
+      reader.readAsBinaryString(file);
+    } else {
+      alert("Type de fichier non supporté !");
+    }
+  };
+
+  return (
+    &lt;div className="data">
+      {/* Sidebar de navigation */}
+      &lt;Sidebar />
+      
+      {/* Conteneur principal */}
+      &lt;div className="dataContainer">
+        {/* Barre de navigation en haut */}
+        &lt;Navbar />
+
+        {/* Section d'upload de fichier */}
+        &lt;div className="uploadSection">
+          &lt;input
+            type="file"
+            accept=".xlsx, .xls, .csv"
+            onChange={handleFileUpload}
+          />
+        &lt;/div>
+
+        {/* Prévisualisation du fichier chargé sous forme de tableau */}
+        &lt;div className="filePreview">
+          {tableData.length > 0 ? (
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  {columns.map((col, idx) => (
+                    &lt;th key={idx}>{col}&lt;/th>
+                  ))}
+                &lt;/tr>
+              &lt;/thead>
+              &lt;tbody>
+                {tableData.map((row, rowIndex) => (
+                  &lt;tr key={rowIndex}>
+                    {columns.map((col, colIndex) => (
+                      &lt;td key={colIndex}>{row[col]}&lt;/td>
+                    ))}
+                  &lt;/tr>
+                ))}
+              &lt;/tbody>
+            &lt;/table>
+          ) : (
+            &lt;p>Aucun fichier chargé&lt;/p>
+          )}
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default Data;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Jun 05 2025 16:55:07 GMT+0200 (heure d’été d’Europe centrale) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
