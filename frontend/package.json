@@ -31,7 +31,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "doc:frontend": "jsdoc -c jsdoc-frontend.json",
-    "doc": "npm run doc:frontend"
+    "doc": "npm run doc:frontend",
+    "tt":"tsts"
   },
   "eslintConfig": {
     "extends": [

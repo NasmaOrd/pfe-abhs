@@ -10,7 +10,7 @@
   "opts": {
     "recurse": true,
     "destination": "public/docs-frontend",  
-    "template": "node_modules/docdash",
+    "template": "default",
     "readme": "./README.md"
   }
 }
