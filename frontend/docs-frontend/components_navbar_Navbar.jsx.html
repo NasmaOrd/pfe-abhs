@@ -1,0 +1,158 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: components/navbar/Navbar.jsx | Source: components/navbar/Navbar.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: components/navbar/Navbar.jsx</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./navbar.scss";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import FullscreenExitOutlinedIcon from "@mui/icons-material/FullscreenExitOutlined";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
+import { DarkModeContext } from "../../context/darkModeContext";
+import { useContext } from "react";
+
+/**
+ * Composant Navbar affichant la barre de navigation supérieure.
+ * Comprend des icônes interactives (recherche, mode sombre, notifications, messages, etc.)
+ * et une image d'utilisateur (avatar).
+ *
+ * Utilise le contexte DarkModeContext pour activer/désactiver le thème sombre.
+ *
+ * @component
+ * @returns {JSX.Element} La barre de navigation principale de l'application.
+ */
+const Navbar = () => {
+  const { dispatch } = useContext(DarkModeContext); // Permet de basculer entre les thèmes
+
+  return (
+    &lt;div className="navbar">
+      &lt;div className="wrapper">
+        {/* Champ de recherche */}
+        &lt;div className="search">
+          &lt;input type="text" placeholder="Search..." />
+          &lt;SearchOutlinedIcon />
+        &lt;/div>
+
+        {/* Ensemble des icônes */}
+        &lt;div className="items">
+          {/* Bouton pour activer/désactiver le mode sombre */}
+          &lt;div className="item">
+            &lt;DarkModeOutlinedIcon
+              className="icon"
+              onClick={() => dispatch({ type: "TOGGLE" })}
+            />
+          &lt;/div>
+
+          {/* Icône de plein écran */}
+          &lt;div className="item">
+            &lt;FullscreenExitOutlinedIcon className="icon" />
+          &lt;/div>
+
+          {/* Icône de notifications avec badge */}
+          &lt;div className="item">
+            &lt;NotificationsNoneOutlinedIcon className="icon" />
+            &lt;div className="counter">1&lt;/div>
+          &lt;/div>
+
+          {/* Icône de messages avec badge */}
+          &lt;div className="item">
+            &lt;ChatBubbleOutlineOutlinedIcon className="icon" />
+            &lt;div className="counter">2&lt;/div>
+          &lt;/div>
+
+          {/* Icône de menu déroulant */}
+          &lt;div className="item">
+            &lt;ListOutlinedIcon className="icon" />
+          &lt;/div>
+
+          {/* Avatar utilisateur */}
+          &lt;div className="item">
+            &lt;img
+              src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;w=500"
+              alt=""
+              className="avatar"
+            />
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default Navbar;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

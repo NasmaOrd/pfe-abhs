@@ -1,0 +1,176 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: pages/new/New.jsx | Source: pages/new/New.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: pages/new/New.jsx</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./new.scss";
+import Sidebar from "../../components/sidebar/Sidebar";
+import Navbar from "../../components/navbar/Navbar";
+import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
+import { useState } from "react";
+
+/**
+ * Composant New
+ * 
+ * Affiche un formulaire pour ajouter un nouvel employé, avec :
+ * - Une barre latérale (Sidebar)
+ * - Une barre de navigation (Navbar)
+ * - Un titre personnalisable
+ * - Une prévisualisation de la photo de profil uploadée
+ * - Un formulaire dynamique avec des champs passés en props
+ * - Un bouton pour soumettre le formulaire
+ * 
+ * @component
+ * @param {Object} props
+ * @param {Array&lt;Object>} props.inputs - Liste des champs de formulaire à afficher.
+ * Chaque objet input doit contenir :
+ *  - id {string} : identifiant unique du champ
+ *  - label {string} : texte affiché comme label du champ
+ *  - type {string} : type HTML de l'input (ex : "text", "email", "password")
+ *  - placeholder {string} : texte d'indication dans l'input
+ * @param {string} [props.title="Ajouter un employé"] - Titre affiché en haut du formulaire.
+ * 
+ * @returns {JSX.Element} Composant React affichant la page d'ajout d'un employé.
+ */
+const New = ({ inputs, title = "Ajouter un employé" }) => {
+  // État local pour stocker le fichier image sélectionné
+  const [file, setFile] = useState(null);
+
+  return (
+    &lt;div className="new">
+      &lt;Sidebar />
+      &lt;div className="newContainer">
+        &lt;Navbar />
+
+        {/* Titre de la page */}
+        &lt;div className="top">
+          &lt;h1>{title}&lt;/h1>
+        &lt;/div>
+
+        &lt;div className="bottom">
+          {/* Partie gauche : aperçu de l'image sélectionnée */}
+          &lt;div className="left">
+            &lt;img
+              src={
+                file
+                  ? URL.createObjectURL(file) // Affiche l'image choisie
+                  : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg" // Image par défaut
+              }
+              alt="photo employé"
+            />
+          &lt;/div>
+
+          {/* Partie droite : formulaire de saisie */}
+          &lt;div className="right">
+            &lt;form>
+              {/* Upload de la photo */}
+              &lt;div className="formInput">
+                &lt;label htmlFor="file">
+                  Photo de profil :{" "}
+                  &lt;DriveFolderUploadOutlinedIcon className="icon" />
+                &lt;/label>
+                &lt;input
+                  type="file"
+                  id="file"
+                  accept="image/*"
+                  onChange={(e) => setFile(e.target.files[0])} // Mise à jour du fichier choisi
+                  style={{ display: "none" }} // Input caché, on clique sur le label
+                />
+              &lt;/div>
+
+              {/* Champs du formulaire dynamiques passés en props */}
+              {inputs.map((input) => (
+                &lt;div className="formInput" key={input.id}>
+                  &lt;label htmlFor={input.id}>{input.label}&lt;/label>
+                  &lt;input
+                    id={input.id}
+                    type={input.type}
+                    placeholder={input.placeholder}
+                  />
+                &lt;/div>
+              ))}
+
+              {/* Bouton de soumission */}
+              &lt;button type="submit">Créer&lt;/button>
+            &lt;/form>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default New;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

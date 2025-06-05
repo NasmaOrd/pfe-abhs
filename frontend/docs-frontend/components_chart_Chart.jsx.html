@@ -1,0 +1,145 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: components/chart/Chart.jsx | Source: components/chart/Chart.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: components/chart/Chart.jsx</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./chart.scss";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+/**
+ * Données mensuelles des précipitations (en mm).
+ * Chaque objet représente un mois de l'année hydrologique.
+ * @type {{ name: string, Precipitations: number }[]}
+ */
+const data = [
+  { name: "Sept", Precipitations: 70 },
+  { name: "Oct", Precipitations: 110 },
+  { name: "Nov", Precipitations: 140 },
+  { name: "Déc", Precipitations: 200 },
+  { name: "Jan", Precipitations: 180 },
+  { name: "Fév", Precipitations: 150 },
+  { name: "Mars", Precipitations: 90 },
+  { name: "Avr", Precipitations: 60 },
+];
+
+/**
+ * Composant React affichant une courbe des précipitations mensuelles.
+ *
+ * @component
+ * @param {Object} props - Propriétés du composant.
+ * @param {number} props.aspect - Ratio largeur/hauteur du graphique (ex: 2).
+ * @param {string} props.title - Titre à afficher au-dessus du graphique (non utilisé ici directement).
+ * @returns {JSX.Element} Un graphique de type AreaChart avec les précipitations mensuelles.
+ */
+const Chart = ({ aspect, title }) => {
+  return (
+    &lt;div className="chart">
+      &lt;div className="title">{"Évolution des précipitations mensuelles"}&lt;/div>
+      &lt;ResponsiveContainer width="100%" aspect={aspect}>
+        &lt;AreaChart
+          data={data}
+          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        >
+          &lt;defs>
+            &lt;linearGradient id="precip" x1="0" y1="0" x2="0" y2="1">
+              &lt;stop offset="5%" stopColor="#1e90ff" stopOpacity={0.8} />
+              &lt;stop offset="95%" stopColor="#1e90ff" stopOpacity={0} />
+            &lt;/linearGradient>
+          &lt;/defs>
+          &lt;XAxis dataKey="name" stroke="gray" />
+          &lt;CartesianGrid strokeDasharray="3 3" className="chartGrid" />
+          &lt;Tooltip />
+          &lt;Area
+            type="monotone"
+            dataKey="Precipitations"
+            stroke="#1e90ff"
+            fillOpacity={1}
+            fill="url(#precip)"
+          />
+        &lt;/AreaChart>
+      &lt;/ResponsiveContainer>
+    &lt;/div>
+  );
+};
+
+export default Chart;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

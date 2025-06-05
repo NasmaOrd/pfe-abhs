@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: pages/login/Login.jsx | Source: pages/login/Login.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: pages/login/Login.jsx</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./login.scss";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Hook pour la navigation en React Router v6
+
+/**
+ * Composant Login
+ * 
+ * Interface de connexion utilisateur.
+ * 
+ * Fonctionnalités :
+ * - Saisie de l'email et du mot de passe
+ * - Envoi d'une requête POST à l'API d'authentification
+ * - Gestion du token JWT retourné et stockage dans localStorage
+ * - Redirection vers la page d'accueil en cas de succès
+ * - Affichage d'un message d'erreur en cas d'échec
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} Composant React affichant le formulaire de connexion.
+ */
+const Login = () => {
+  // États pour gérer les inputs et le message d'erreur
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // Pour rediriger après connexion réussie
+
+  /**
+   * Gestionnaire de la soumission du formulaire de connexion.
+   * Envoie les identifiants à l'API, récupère le token JWT,
+   * le stocke dans localStorage, et redirige l'utilisateur.
+   * En cas d'erreur, affiche un message.
+   * 
+   * @param {React.FormEvent&lt;HTMLFormElement>} e - L'événement de soumission du formulaire
+   */
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Requête POST vers l'API d'authentification
+      const response = await axios.post("https://pfe-abhs.vercel.app/api/auth/login", {
+        email,
+        password,
+      });
+
+      // Récupération du token JWT retourné par le serveur
+      const { token } = response.data;
+
+      // Stockage du token dans localStorage pour les requêtes ultérieures
+      localStorage.setItem("authToken", token);
+
+      // Redirection vers la page d'accueil après connexion
+      navigate("/");
+    } catch (error) {
+      // En cas d'erreur, affichage d'un message à l'utilisateur
+      setError("Erreur de connexion. Vérifiez vos informations.");
+    }
+  };
+
+  return (
+    &lt;div className="login">
+      &lt;h2>Connexion&lt;/h2>
+
+      {/* Formulaire de connexion */}
+      &lt;form onSubmit={handleLogin}>
+        &lt;div>
+          &lt;label>Email :&lt;/label>
+          &lt;input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        &lt;/div>
+
+        &lt;div>
+          &lt;label>Mot de passe :&lt;/label>
+          &lt;input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        &lt;/div>
+
+        &lt;button type="submit">Se connecter&lt;/button>
+      &lt;/form>
+
+      {/* Affichage du message d'erreur s'il y en a un */}
+      {error &amp;&amp; &lt;p className="error">{error}&lt;/p>}
+    &lt;/div>
+  );
+};
+
+export default Login;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

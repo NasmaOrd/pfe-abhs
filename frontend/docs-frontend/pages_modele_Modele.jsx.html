@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: pages/modele/Modele.jsx | Source: pages/modele/Modele.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: pages/modele/Modele.jsx</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./modele.scss";
+import Sidebar from "../../components/sidebar/Sidebar";
+import Navbar from "../../components/navbar/Navbar";
+import { useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+/**
+ * Composant Modele
+ * 
+ * Permet de simuler un modèle linéaire simple y = param1 * x + param2.
+ * 
+ * Fonctionnalités :
+ * - Saisie de deux paramètres numériques (pente et constante)
+ * - Calcul des résultats de la simulation sous forme d'une série de points
+ * - Affichage d'un graphique linéaire des résultats
+ * - Intégration d'une barre latérale (Sidebar) et d'une barre de navigation (Navbar)
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} Composant React affichant l'interface de simulation et le graphique des résultats.
+ */
+const Modele = () => {
+  // États pour les paramètres de simulation
+  const [param1, setParam1] = useState("");
+  const [param2, setParam2] = useState("");
+  // État pour stocker les résultats calculés (données du graphique)
+  const [resultData, setResultData] = useState([]);
+
+  /**
+   * Génére la simulation à partir des paramètres saisis.
+   * Calcule une série de points suivant la formule y = param1 * x + param2,
+   * pour x allant de 0 à 9.
+   * Met à jour l'état `resultData` pour affichage dans le graphique.
+   */
+  const handleSimulate = () => {
+    const data = Array.from({ length: 10 }, (_, i) => ({
+      x: i,
+      y: Number(param1) * i + Number(param2),
+    }));
+    setResultData(data);
+  };
+
+  return (
+    &lt;div className="modele">
+      &lt;Sidebar />
+      &lt;div className="modeleContainer">
+        &lt;Navbar />
+        &lt;div className="modelForm">
+          &lt;h2>Simulation de modèle&lt;/h2>
+
+          {/* Formulaire de saisie des paramètres */}
+          &lt;div className="formRow">
+            &lt;input
+              type="number"
+              placeholder="Paramètre 1 (ex: pente)"
+              value={param1}
+              onChange={(e) => setParam1(e.target.value)}
+            />
+            &lt;input
+              type="number"
+              placeholder="Paramètre 2 (ex: constante)"
+              value={param2}
+              onChange={(e) => setParam2(e.target.value)}
+            />
+          &lt;/div>
+
+          {/* Bouton pour lancer la simulation */}
+          &lt;button onClick={handleSimulate}>Lancer&lt;/button>
+        &lt;/div>
+
+        {/* Affichage du graphique uniquement si on a des résultats */}
+        {resultData.length > 0 &amp;&amp; (
+          &lt;div className="modelResult">
+            &lt;h4>Résultat :&lt;/h4>
+            &lt;ResponsiveContainer width="100%" height={300}>
+              &lt;LineChart data={resultData}>
+                &lt;CartesianGrid strokeDasharray="3 3" />
+                &lt;XAxis dataKey="x" />
+                &lt;YAxis />
+                &lt;Tooltip />
+                &lt;Line
+                  type="monotone"
+                  dataKey="y"
+                  stroke="#82ca9d"
+                  strokeWidth={2}
+                />
+              &lt;/LineChart>
+            &lt;/ResponsiveContainer>
+          &lt;/div>
+        )}
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default Modele;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

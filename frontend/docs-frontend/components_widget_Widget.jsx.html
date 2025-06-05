@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: components/widget/Widget.jsx | Source: components/widget/Widget.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: components/widget/Widget.jsx</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./widget.scss";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
+import DeviceThermostatOutlinedIcon from "@mui/icons-material/DeviceThermostatOutlined";
+import RadarIcon from "@mui/icons-material/Radar";
+
+/**
+ * Composant Widget affichant un résumé statistique selon le type donné.
+ * Les types possibles sont : "employées", "stations", "precipitations", "humidite".
+ * Chaque widget affiche un titre, un chiffre, un lien et une icône personnalisée.
+ * 
+ * @component
+ * @param {Object} props
+ * @param {string} props.type - Type de widget à afficher
+ * @returns {JSX.Element} Un widget personnalisé avec icône et données
+ */
+const Widget = ({ type }) => {
+  let data;
+
+  // Valeurs fictives pour l'exemple : à remplacer par des données dynamiques
+  const amount = 100;
+  const diff = 20;
+
+  // Choix des données selon le type du widget
+  switch (type) {
+    case "employées":
+      data = {
+        title: "EMPLOYÉES",
+        isMoney: false,
+        link: "Voir toutes les équipes",
+        icon: (
+          &lt;PersonOutlinedIcon
+            className="icon"
+            style={{
+              color: "darkblue",
+              backgroundColor: "rgba(0, 0, 139, 0.2)",
+            }}
+          />
+        ),
+      };
+      break;
+    case "stations":
+      data = {
+        title: "STATIONS",
+        isMoney: false,
+        link: "Voir les stations",
+        icon: (
+          &lt;RadarIcon
+            className="icon"
+            style={{
+              backgroundColor: "rgba(30, 144, 255, 0.2)",
+              color: "dodgerblue",
+            }}
+          />
+        ),
+      };
+      break;
+    case "precipitations":
+      data = {
+        title: "PRÉCIPITATIONS",
+        isMoney: false,
+        link: "Voir le cumul",
+        icon: (
+          &lt;WaterDropOutlinedIcon
+            className="icon"
+            style={{ backgroundColor: "rgba(0, 191, 255, 0.2)", color: "deepskyblue" }}
+          />
+        ),
+      };
+      break;
+    case "humidite":
+      data = {
+        title: "HUMIDITÉ",
+        isMoney: false,
+        link: "Détails du taux",
+        icon: (
+          &lt;DeviceThermostatOutlinedIcon
+            className="icon"
+            style={{
+              backgroundColor: "rgba(46, 139, 87, 0.2)",
+              color: "seagreen",
+            }}
+          />
+        ),
+      };
+      break;
+    default:
+      data = {
+        title: "INCONNU",
+        isMoney: false,
+        link: "",
+        icon: null,
+      };
+      break;
+  }
+
+  return (
+    &lt;div className="widget">
+      {/* Partie gauche du widget avec titre, chiffre et lien */}
+      &lt;div className="left">
+        &lt;span className="title">{data.title}&lt;/span>
+        &lt;span className="counter">
+          {/* Affiche le symbole monétaire si nécessaire */}
+          {data.isMoney &amp;&amp; "€"} {amount}
+        &lt;/span>
+        &lt;span className="link">{data.link}&lt;/span>
+      &lt;/div>
+
+      {/* Partie droite avec pourcentage d'évolution et icône */}
+      &lt;div className="right">
+        &lt;div className="percentage positive">
+          &lt;KeyboardArrowUpIcon />
+          {diff} %
+        &lt;/div>
+        {data.icon}
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default Widget;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

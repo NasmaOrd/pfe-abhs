@@ -1,0 +1,144 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: components/featured/Featured.jsx | Source: components/featured/Featured.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: components/featured/Featured.jsx</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#Analyses">Analyses</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Chart">Chart</a></li><li><a href="global.html#DarkModeContext">DarkModeContext</a></li><li><a href="global.html#DarkModeContextProvider">DarkModeContextProvider</a></li><li><a href="global.html#DarkModeReducer">DarkModeReducer</a></li><li><a href="global.html#Data">Data</a></li><li><a href="global.html#Datatable">Datatable</a></li><li><a href="global.html#Featured">Featured</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#INITIAL_STATE">INITIAL_STATE</a></li><li><a href="global.html#List">List</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Modele">Modele</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#New">New</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#Single">Single</a></li><li><a href="global.html#Stations">Stations</a></li><li><a href="global.html#Widget">Widget</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dummyData">dummyData</a></li><li><a href="global.html#isAuthenticated">isAuthenticated</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./featured.scss";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
+
+/**
+ * Composant React affichant un résumé des précipitations sous forme de widget visuel.
+ * Il comprend un graphique circulaire, une mesure journalière et des comparaisons avec des périodes antérieures.
+ *
+ * @component
+ * @returns {JSX.Element} Un widget de synthèse sur les taux de précipitations.
+ */
+const Featured = () => {
+  return (
+    &lt;div className="featured">
+      &lt;div className="top">
+        &lt;h1 className="title">Taux de précipitations&lt;/h1>
+        &lt;MoreVertIcon fontSize="small" />
+      &lt;/div>
+      &lt;div className="bottom">
+        &lt;div className="featuredChart">
+          {/* Graphique circulaire indiquant 70% de réalisation */}
+          &lt;CircularProgressbar value={70} text={"70%"} strokeWidth={5} />
+        &lt;/div>
+        &lt;p className="title">Précipitations journalières&lt;/p>
+        &lt;p className="amount">14 mm&lt;/p>
+        &lt;p className="desc">
+          Données issues des dernières mesures. Les valeurs peuvent ne pas être totalement à jour.
+        &lt;/p>
+
+        &lt;div className="summary">
+          {/* Comparaison avec l'objectif mensuel */}
+          &lt;div className="item">
+            &lt;div className="itemTitle">Objectif mensuel&lt;/div>
+            &lt;div className="itemResult negative">
+              &lt;KeyboardArrowDownIcon fontSize="small" />
+              &lt;div className="resultAmount">-8%&lt;/div>
+            &lt;/div>
+          &lt;/div>
+
+          {/* Comparaison avec la semaine précédente */}
+          &lt;div className="item">
+            &lt;div className="itemTitle">Semaine dernière&lt;/div>
+            &lt;div className="itemResult positive">
+              &lt;KeyboardArrowUpOutlinedIcon fontSize="small" />
+              &lt;div className="resultAmount">+15%&lt;/div>
+            &lt;/div>
+          &lt;/div>
+
+          {/* Comparaison avec le mois précédent */}
+          &lt;div className="item">
+            &lt;div className="itemTitle">Mois dernier&lt;/div>
+            &lt;div className="itemResult positive">
+              &lt;KeyboardArrowUpOutlinedIcon fontSize="small" />
+              &lt;div className="resultAmount">+25%&lt;/div>
+            &lt;/div>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default Featured;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

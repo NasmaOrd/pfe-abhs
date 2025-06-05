@@ -32,7 +32,7 @@
     "eject": "react-scripts eject",
     "doc:frontend": "jsdoc -c jsdoc-frontend.json",
     "doc": "npm run doc:frontend",
-    "tt":"tsts"
+    "tt": "tsts"
   },
   "eslintConfig": {
     "extends": [
@@ -53,6 +53,8 @@
     ]
   },
   "devDependencies": {
-    "docdash": "^2.0.2"
+    "docdash": "^2.0.2",
+    "taffydb": "^2.7.3",
+    "tui-jsdoc-template": "^1.2.2"
   }
 }

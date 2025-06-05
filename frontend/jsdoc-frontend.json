@@ -10,7 +10,6 @@
   "opts": {
     "recurse": true,
     "destination": "public/docs-frontend",  
-    "template": "default",
     "readme": "./README.md"
   }
 }
