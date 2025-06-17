@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./stations.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
@@ -7,7 +7,6 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import axios from "axios";
 
-// Fix Leaflet icon bug in React
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -19,8 +18,7 @@ L.Icon.Default.mergeOptions({
 });
 
 /**
- * Liste des stations hydrologiques/piézométriques du bassin du Sebbou (Fès, Maroc).
- * @type {Array<{id:number, nom:string, latitude:number, longitude:number}>}
+ * Liste des stations hydrologiques/piézométriques.
  */
 const stations = [
   { id: 1, nom: "Pont du Mdez (Sebbou)", latitude: 34.1900, longitude: -4.1250 },
@@ -30,61 +28,95 @@ const stations = [
 ];
 
 /**
- * Composant React affichant la page des stations hydrologiques du bassin de Sebbou (Fès).
- * Gère la sélection de station, l'upload du fichier vers le serveur et l'ouverture
- * de la page Streamlit avec les paramètres nécessaires.
- *
- * @component
- * @returns {JSX.Element}
+ * Composant React affichant la page des stations,
+ * permettant d'uploader ou choisir un fichier déjà uploadé,
+ * et lancer l'étude en ouvrant Streamlit avec params.
  */
 const Stations = () => {
   const [selectedStation, setSelectedStation] = useState(null);
+  const [existingFiles, setExistingFiles] = useState([]);
+  const [selectedExistingFile, setSelectedExistingFile] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
   /**
-   * Gère le clic sur un marqueur pour sélectionner une station.
-   * @param {{id:number, nom:string, latitude:number, longitude:number}} station - La station sélectionnée
+   * Quand on clique sur une station, récupérer les fichiers uploadés liés à cette station.
+   */
+  useEffect(() => {
+    if (!selectedStation) {
+      setExistingFiles([]);
+      setSelectedExistingFile(null);
+      setSelectedFile(null);
+      setError(null);
+      return;
+    }
+
+    axios.get(`http://localhost:5000/api/files/${selectedStation.id}`)
+      .then(res => {
+        setExistingFiles(res.data);
+        setSelectedExistingFile(null);
+        setSelectedFile(null);
+        setError(null);
+      })
+      .catch(() => {
+        setExistingFiles([]);
+        setSelectedExistingFile(null);
+      });
+  }, [selectedStation]);
+
+  /**
+   * Gère le clic sur un marqueur station.
+   * @param {Object} station La station sélectionnée
    */
   const handleMarkerClick = (station) => {
     setSelectedStation(station);
-    setSelectedFile(null);
-    setError(null);
   };
 
   /**
-   * Upload le fichier vers le backend, récupère l'URL et ouvre Streamlit avec params.
+   * Upload un nouveau fichier vers le backend, puis recharge la liste des fichiers.
    */
-  const handleStartStudy = async () => {
-    if (!selectedFile || !selectedStation) return;
-    setUploading(true);
-    setError(null);
+ const handleUpload = async () => {
+  if (!selectedFile || !selectedStation) return;
+  setUploading(true);
+  setError(null);
 
-    try {
-      // Préparation du form data pour multer upload
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("stationId", selectedStation.id);
+  try {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
 
-      // Appel POST upload vers ton backend (adapter URL si besoin)
-      const response = await axios.post("http://localhost:5000/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    // On passe stationId en query param (pas dans formData)
+    await axios.post(
+      `http://localhost:5000/upload?stationId=${selectedStation.id}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
 
-      const fileUrl = encodeURIComponent(response.data.fileUrl);
+    // Après upload, on recharge la liste des fichiers associés
+    const res = await axios.get(`http://localhost:5000/api/files/${selectedStation.id}`);
+    setExistingFiles(res.data);
+    setSelectedExistingFile(null);
+    setSelectedFile(null);
+  } catch (err) {
+    setError("Erreur lors de l'upload du fichier.");
+    console.error(err);
+  } finally {
+    setUploading(false);
+  }
+};
 
-      // Ouvre une nouvelle fenêtre avec paramètres station + url fichier
-      const streamlitUrl = `http://localhost:8501/?station=${selectedStation.id}&fileurl=${fileUrl}`;
-      window.open(streamlitUrl, "_blank");
-    } catch (err) {
-      console.error("Erreur upload fichier :", err);
-      setError("Erreur lors de l'upload du fichier.");
-    } finally {
-      setUploading(false);
-    }
+
+  /**
+   * Ouvre la page Streamlit dans un nouvel onglet avec station + fichier choisi.
+   * @param {string} filename Nom du fichier (dans /uploads/)
+   */
+  const handleStartStudy = (filename) => {
+    if (!selectedStation || !filename) return;
+    const fileUrl = encodeURIComponent(`http://localhost:5000/uploads/${filename}`);
+    const streamlitUrl = `http://localhost:8501/?station=${selectedStation.id}&fileurl=${fileUrl}`;
+    window.open(streamlitUrl, "_blank");
   };
 
   return (
@@ -94,7 +126,6 @@ const Stations = () => {
         <Navbar />
         <h2>Stations Hydrologiques autour de Sebbou (Fès)</h2>
 
-        {/* Carte interactive */}
         <div className="mapContainer" style={{ height: "500px", marginTop: "20px" }}>
           <MapContainer center={[34.0, -4.7]} zoom={11} style={{ height: "100%", width: "100%" }}>
             <TileLayer
@@ -105,34 +136,48 @@ const Stations = () => {
               <Marker
                 key={station.id}
                 position={[station.latitude, station.longitude]}
-                eventHandlers={{ click: () => handleMarkerClick(station) }}
+                eventHandlers={{
+                  click: () => handleMarkerClick(station),
+                }}
               >
-                <Popup>
-                  <strong>{station.nom}</strong><br />
-                  Lat : {station.latitude.toFixed(4)}<br />
-                  Lon : {station.longitude.toFixed(4)}
-                </Popup>
+                <Popup>{station.nom}</Popup>
               </Marker>
             ))}
           </MapContainer>
         </div>
 
-        {/* Formulaire de fichier (si station sélectionnée) */}
         {selectedStation && (
-          <div className="uploadSection" style={{ marginTop: "20px" }}>
-            <h3>Étude de la station : {selectedStation.nom}</h3>
+          <div className="stationDetails">
+            <h3>Détails station : {selectedStation.nom}</h3>
+
+            {existingFiles.length > 0 ? (
+              <>
+                <p>Fichiers existants pour cette station :</p>
+                <ul>
+                  {existingFiles.map((file) => (
+                    <li key={file}>
+                      {file.replace(`${selectedStation.id}_`, "")}{" "}
+                      <button onClick={() => handleStartStudy(file)}>Commencer l'étude</button>
+                    </li>
+                  ))}
+                </ul>
+                <hr />
+                <p>Ou uploader un nouveau fichier :</p>
+              </>
+            ) : (
+              <p>Aucun fichier trouvé pour cette station, veuillez uploader un fichier :</p>
+            )}
+
             <input
               type="file"
-              accept=".csv, .xlsx"
+              accept=".csv,.xlsx"
               onChange={(e) => setSelectedFile(e.target.files[0])}
-              disabled={uploading}
             />
             <button
-              onClick={handleStartStudy}
               disabled={!selectedFile || uploading}
-              style={{ marginLeft: "10px" }}
+              onClick={handleUpload}
             >
-              {uploading ? "Upload en cours..." : "Commencer l'étude"}
+              {uploading ? "Upload en cours..." : "Uploader le fichier"}
             </button>
             {error && <p style={{ color: "red" }}>{error}</p>}
           </div>
