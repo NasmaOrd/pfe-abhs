@@ -19,3 +19,13 @@
     }
   }
 }
+.stationsPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+}
