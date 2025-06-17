@@ -5,6 +5,7 @@ import Navbar from "../../components/navbar/Navbar";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import axios from "axios";
 
 // Fix Leaflet icon bug in React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -19,7 +20,6 @@ L.Icon.Default.mergeOptions({
 
 /**
  * Liste des stations hydrologiques/piézométriques du bassin du Sebbou (Fès, Maroc).
- * Coordonnées basées sur des localisations réelles ou approximatives du bassin.
  * @type {Array<{id:number, nom:string, latitude:number, longitude:number}>}
  */
 const stations = [
@@ -31,9 +31,8 @@ const stations = [
 
 /**
  * Composant React affichant la page des stations hydrologiques du bassin de Sebbou (Fès).
- * - Carte interactive avec marqueurs via React-Leaflet
- * - Upload de fichier pour étude locale
- * - Redirection vers Streamlit avec le fichier transmis en base64
+ * Gère la sélection de station, l'upload du fichier vers le serveur et l'ouverture
+ * de la page Streamlit avec les paramètres nécessaires.
  *
  * @component
  * @returns {JSX.Element}
@@ -41,29 +40,51 @@ const stations = [
 const Stations = () => {
   const [selectedStation, setSelectedStation] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
 
   /**
    * Gère le clic sur un marqueur pour sélectionner une station.
-   * @param {Object} station - La station sélectionnée
+   * @param {{id:number, nom:string, latitude:number, longitude:number}} station - La station sélectionnée
    */
   const handleMarkerClick = (station) => {
     setSelectedStation(station);
     setSelectedFile(null);
+    setError(null);
   };
 
   /**
-   * Envoie le fichier vers Streamlit via une URL avec paramètres (base64).
+   * Upload le fichier vers le backend, récupère l'URL et ouvre Streamlit avec params.
    */
-  const handleStartStudy = () => {
+  const handleStartStudy = async () => {
     if (!selectedFile || !selectedStation) return;
+    setUploading(true);
+    setError(null);
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64File = encodeURIComponent(reader.result);
-      const url = `http://localhost:8501/?station=${selectedStation.id}&filename=${selectedFile.name}&filedata=${base64File}`;
-      window.open(url, "_blank");
-    };
-    reader.readAsDataURL(selectedFile);
+    try {
+      // Préparation du form data pour multer upload
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("stationId", selectedStation.id);
+
+      // Appel POST upload vers ton backend (adapter URL si besoin)
+      const response = await axios.post("http://localhost:5000/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const fileUrl = encodeURIComponent(response.data.fileUrl);
+
+      // Ouvre une nouvelle fenêtre avec paramètres station + url fichier
+      const streamlitUrl = `http://localhost:8501/?station=${selectedStation.id}&fileurl=${fileUrl}`;
+      window.open(streamlitUrl, "_blank");
+    } catch (err) {
+      console.error("Erreur upload fichier :", err);
+      setError("Erreur lors de l'upload du fichier.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -104,14 +125,16 @@ const Stations = () => {
               type="file"
               accept=".csv, .xlsx"
               onChange={(e) => setSelectedFile(e.target.files[0])}
+              disabled={uploading}
             />
             <button
               onClick={handleStartStudy}
-              disabled={!selectedFile}
+              disabled={!selectedFile || uploading}
               style={{ marginLeft: "10px" }}
             >
-              Commencer l'étude
+              {uploading ? "Upload en cours..." : "Commencer l'étude"}
             </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
           </div>
         )}
       </div>
