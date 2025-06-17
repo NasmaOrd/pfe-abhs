@@ -2,21 +2,21 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
 const authRoutes = require('./routes/auth');  
 dotenv.config();  
 
 const app = express();
 
-// ✅ CORS configuré correctement
 const allowedOrigins = [
   'https://pfe-abhs.vercel.app',
   'https://pfe-abhs.web.app',
-  'http://localhost:3000' // (utile pour tests locaux)
+  'http://localhost:3000' 
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Autorise requêtes sans origine (ex: Postman) ou si dans la liste
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -27,24 +27,39 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// ❌ Supprimé l'ancien middleware générique qui causait conflit
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//   next();
-// });
-
 app.use(express.json());
+
+// Config multer upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + path.extname(file.originalname);
+    cb(null, req.body.stationId + '-' + uniqueSuffix);
+  }
+});
+const upload = multer({ storage });
+
+// Servir les fichiers uploadés
+app.use('/uploads', express.static('uploads'));
+
+// Route upload
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'Aucun fichier reçu' });
+  }
+  const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  console.log('Fichier reçu:', fileUrl);
+  res.json({ fileUrl });
+});
 
 app.use('/api/auth', authRoutes);
 
-// ✅ Route de test
 app.get("/", (req, res) => {
   res.send("");
 }); 
 
-// ✅ Connexion MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('MongoDB connected');
