@@ -1,6 +1,13 @@
+/**
+ * Page : Analyses - Affichage et analyse avancée de la pluviométrie mensuelle
+ * Ajout d'une ligne de tendance basée sur la régression linéaire
+ */
+
 import "./analyses.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
+import { saveAs } from "file-saver";
+import Papa from "papaparse";
 import {
   LineChart,
   Line,
@@ -11,93 +18,197 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { useState, useEffect } from "react";
+
+const moyenne = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+const ecartType = (arr, mean) =>
+  Math.sqrt(arr.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / arr.length);
 
 /**
- * Données fictives représentant la pluviométrie mensuelle (en mm).
- * @constant {Array<{mois: string, pluie: number}>}
+ * Calcule la droite de tendance (régression linéaire).
+ * @param {Array} data - Données [{mois, pluie}].
+ * @returns {Array} Données [{mois, tendance}] pour la droite.
  */
-const dummyData = [
-  { mois: "Jan", pluie: 80 },
-  { mois: "Fév", pluie: 60 },
-  { mois: "Mar", pluie: 100 },
-  { mois: "Avr", pluie: 40 },
-  { mois: "Mai", pluie: 20 },
-  { mois: "Juin", pluie: 10 },
-  { mois: "Juil", pluie: 30 },
-  { mois: "Août", pluie: 50 },
-  { mois: "Sep", pluie: 90 },
-  { mois: "Oct", pluie: 110 },
-  { mois: "Nov", pluie: 95 },
-  { mois: "Déc", pluie: 70 },
-];
+const calculerTendance = (data) => {
+  const n = data.length;
+  const x = data.map((_, i) => i);
+  const y = data.map((d) => d.pluie);
 
-/**
- * Composant Analyses
- * 
- * Affiche une page d'analyse mensuelle avec un graphique de pluviométrie.
- * 
- * Structure :
- * - Sidebar de navigation latérale
- * - Navbar en haut
- * - Titre de la page
- * - Graphique en ligne responsive représentant la pluviométrie mensuelle
- * 
- * Utilise la bibliothèque Recharts pour les graphiques.
- * 
- * @component
- * @returns {JSX.Element} Composant React affichant les analyses sous forme graphique
- */
+  const meanX = moyenne(x);
+  const meanY = moyenne(y);
+
+  const numerateur = x.reduce((sum, xi, i) => sum + (xi - meanX) * (y[i] - meanY), 0);
+  const denominateur = x.reduce((sum, xi) => sum + Math.pow(xi - meanX, 2), 0);
+  const pente = numerateur / denominateur;
+  const intercept = meanY - pente * meanX;
+
+  return data.map((_, i) => ({ mois: data[i].mois, tendance: pente * i + intercept }));
+};
+
 const Analyses = () => {
+  const [data, setData] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [tendance, setTendance] = useState([]);
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        const parsedData = results.data
+          .map((row) => ({
+            mois: row.mois?.trim(),
+            pluie: parseFloat(row.pluie?.trim()),
+          }))
+          .filter((d) => d.mois && !isNaN(d.pluie));
+
+        if (parsedData.length === 0) {
+          alert("Le fichier CSV est vide ou mal formaté !");
+          return;
+        }
+
+        const values = parsedData.map((d) => d.pluie);
+        const mean = moyenne(values);
+        const std = ecartType(values, mean);
+
+        const withAnomalies = parsedData.map((d) => {
+          const z = (d.pluie - mean) / std;
+          let anomalie = null;
+          if (z > 1) anomalie = "haute";
+          else if (z < -1) anomalie = "basse";
+          return { ...d, anomalie };
+        });
+
+        setData(withAnomalies);
+        setStats({
+          moyenne: mean,
+          ecartType: std,
+          hautes: withAnomalies.filter((d) => d.anomalie === "haute").length,
+          basses: withAnomalies.filter((d) => d.anomalie === "basse").length,
+        });
+
+        setTendance(calculerTendance(parsedData));
+      },
+    });
+  };
+
+  const renderColoredDot = (value) => {
+    if (value === "haute") return <span style={{ color: "red" }}>🔴 Haute</span>;
+    if (value === "basse") return <span style={{ color: "orange" }}>🟧 Basse</span>;
+    return "-";
+  };
+
+  const renderCustomDot = ({ cx, cy, payload }) => {
+    if (cx === undefined || cy === undefined) return null;
+
+    let fillColor = "#8884d8";
+    if (payload.anomalie === "haute") fillColor = "red";
+    else if (payload.anomalie === "basse") fillColor = "orange";
+
+    return <circle cx={cx} cy={cy} r={5} fill={fillColor} stroke="#555" strokeWidth={1} />;
+  };
+
+  const exporterAnomaliesCSV = () => {
+    const anomalies = data.filter((d) => d.anomalie);
+    if (anomalies.length === 0) {
+      alert("Aucune anomalie détectée à exporter.");
+      return;
+    }
+    const header = "mois,pluie,anomalie\n";
+    const rows = anomalies.map((d) => `${d.mois},${d.pluie},${d.anomalie}`).join("\n");
+    const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8" });
+    saveAs(blob, "anomalies_detectees.csv");
+  };
+
   return (
     <div className="analyses">
-      {/* Barre latérale de navigation */}
       <Sidebar />
-
-      {/* Conteneur principal avec navbar et contenu */}
       <div className="analysesContainer">
-        {/* Barre de navigation en haut */}
         <Navbar />
+        <h2>
+          <span>Analyses</span> Mensuelles
+        </h2>
 
-        {/* Titre de la page */}
-        <h2><span>Analyses</span> Mensuelles</h2>
-
-        {/* Grille contenant les graphiques */}
-        <div className="chartGrid">
-          <div className="chartCard">
-            <div className="chartTitle">Pluviométrie mensuelle</div>
-
-            {/* Graphique réactif avec largeur 100% et hauteur 300px */}
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart
-                data={dummyData}
-                margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
-              >
-                {/* Grille de fond */}
-                <CartesianGrid strokeDasharray="3 3" />
-
-                {/* Axe X avec les mois */}
-                <XAxis dataKey="mois" />
-
-                {/* Axe Y automatique */}
-                <YAxis />
-
-                {/* Tooltip affiché au survol */}
-                <Tooltip />
-
-                {/* Légende du graphique */}
-                <Legend />
-
-                {/* Ligne représentant la pluie */}
-                <Line
-                  type="monotone"
-                  dataKey="pluie"
-                  stroke="#8884d8"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="importBox">
+          <label htmlFor="csvUpload">📂 Importer un fichier CSV :</label>
+          <input type="file" id="csvUpload" accept=".csv" onChange={handleFileUpload} />
         </div>
+
+        {data.length > 0 && (
+          <div className="chartGrid">
+            <div className="chartCard">
+              <div className="chartTitle">Pluviométrie mensuelle & ligne de tendance</div>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="mois" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="pluie" stroke="#8884d8" dot={renderCustomDot} />
+                  {tendance.length > 0 && (
+                    <Line
+                      type="monotone"
+                      dataKey="tendance"
+                      data={tendance}
+                      stroke="#00b894"
+                      dot={false}
+                      name="Tendance"
+                    />
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
+        {stats && (
+          <div className="statsBox">
+            <h3>Résumé Statistique</h3>
+            <p>Moyenne : {stats.moyenne.toFixed(2)} mm</p>
+            <p>Écart-type : {stats.ecartType.toFixed(2)}</p>
+            <p>Anomalies hautes 🔴 : {stats.hautes}</p>
+            <p>Anomalies basses 🟧 : {stats.basses}</p>
+            <button onClick={exporterAnomaliesCSV}>📤 Exporter les anomalies</button>
+          </div>
+        )}
+
+        {data.length > 0 && (
+          <div className="anomalieTable">
+            <h3>Détails des mois</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Mois</th>
+                  <th>Pluie (mm)</th>
+                  <th>Anomalie</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((d, i) => (
+                  <tr
+                    key={i}
+                    style={{
+                      backgroundColor:
+                        d.anomalie === "haute"
+                          ? "#ffcccc"
+                          : d.anomalie === "basse"
+                          ? "#ffe0b3"
+                          : "transparent",
+                    }}
+                  >
+                    <td>{d.mois}</td>
+                    <td>{d.pluie}</td>
+                    <td>{renderColoredDot(d.anomalie)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

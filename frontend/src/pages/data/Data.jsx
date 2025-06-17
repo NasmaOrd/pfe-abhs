@@ -1,111 +1,131 @@
-import "./data.scss";
-import Sidebar from "../../components/sidebar/Sidebar";
-import Navbar from "../../components/navbar/Navbar";
-import * as XLSX from "xlsx";
-import Papa from "papaparse";
-import { useState } from "react";
-
 /**
  * Composant Data
  * 
- * Permet d'importer un fichier CSV ou Excel, d'en extraire les données,
- * puis d'afficher ces données sous forme de tableau.
+ * Permet d'importer deux fichiers CSV contenant les colonnes "mois" et "pluie",
+ * puis d'afficher un graphique comparatif ainsi que des statistiques (moyenne, min, max).
  * 
- * Fonctionnalités principales :
- * - Upload d'un fichier CSV, XLSX ou XLS
- * - Parsing des données via PapaParse (CSV) ou XLSX (Excel)
- * - Affichage dynamique des colonnes et des lignes extraites
+ * Fonctionnalités :
+ * - Upload de 2 fichiers CSV (année 1 et année 2)
+ * - Visualisation des données sur un LineChart superposé
+ * - Calcul statistique pour chaque série de données
  * 
  * @component
- * @returns {JSX.Element} Composant React pour l'import et la visualisation de données tabulaires
+ * @returns {JSX.Element} Composant React de comparaison interannuelle
  */
+
+import "./data.scss";
+import Sidebar from "../../components/sidebar/Sidebar";
+import Navbar from "../../components/navbar/Navbar";
+import Papa from "papaparse";
+import { useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+
+const moyenne = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+const min = (arr) => Math.min(...arr);
+const max = (arr) => Math.max(...arr);
+
 const Data = () => {
-  // État pour stocker les données extraites du fichier (tableau d'objets)
-  const [tableData, setTableData] = useState([]);
-  // État pour stocker les noms de colonnes à afficher dans le tableau
-  const [columns, setColumns] = useState([]);
+  const [data1, setData1] = useState([]);
+  const [data2, setData2] = useState([]);
+  const [stats1, setStats1] = useState(null);
+  const [stats2, setStats2] = useState(null);
 
-  /**
-   * Gestionnaire d'import de fichier (CSV ou Excel)
-   * @param {React.ChangeEvent<HTMLInputElement>} e - Événement de changement sur l'input fichier
-   */
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const parseFile = (file, setData, setStats) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const parsed = results.data.map((row) => ({
+          mois: row.mois?.trim(),
+          pluie: parseFloat(row.pluie?.trim()),
+        })).filter((d) => d.mois && !isNaN(d.pluie));
 
-    const reader = new FileReader();
-
-    if (file.name.endsWith(".csv")) {
-      // Lecture et parsing du CSV via PapaParse
-      reader.onload = (event) => {
-        const parsed = Papa.parse(event.target.result, {
-          header: true,
-          skipEmptyLines: true,
+        setData(parsed);
+        const values = parsed.map((d) => d.pluie);
+        setStats({
+          moyenne: moyenne(values),
+          min: min(values),
+          max: max(values),
         });
-        setTableData(parsed.data);
-        setColumns(Object.keys(parsed.data[0] || {}));
-      };
-      reader.readAsText(file);
-    } else if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
-      // Lecture du fichier Excel avec XLSX
-      reader.onload = (event) => {
-        const workbook = XLSX.read(event.target.result, { type: "binary" });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-        setTableData(jsonData);
-        setColumns(Object.keys(jsonData[0] || {}));
-      };
-      reader.readAsBinaryString(file);
-    } else {
-      alert("Type de fichier non supporté !");
-    }
+      },
+    });
   };
 
   return (
     <div className="data">
-      {/* Sidebar de navigation */}
       <Sidebar />
-      
-      {/* Conteneur principal */}
       <div className="dataContainer">
-        {/* Barre de navigation en haut */}
         <Navbar />
+        <h2>📊 Comparaison inter-annuelle</h2>
 
-données
-        {/* Section d'upload de fichier */}
         <div className="uploadSection">
-          <input
-            type="file"
-            accept=".xlsx, .xls, .csv"
-            onChange={handleFileUpload}
-          />
+          <div>
+            <label>📁 Fichier Année 1 :</label>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={(e) => parseFile(e.target.files[0], setData1, setStats1)}
+            />
+          </div>
+          <div>
+            <label>📁 Fichier Année 2 :</label>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={(e) => parseFile(e.target.files[0], setData2, setStats2)}
+            />
+          </div>
         </div>
 
-        {/* Prévisualisation du fichier chargé sous forme de tableau */}
-        <div className="filePreview">
-          {tableData.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  {columns.map((col, idx) => (
-                    <th key={idx}>{col}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {columns.map((col, colIndex) => (
-                      <td key={colIndex}>{row[col]}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Aucun fichier chargé</p>
-          )}
-        </div>
+        {/* Chart */}
+        {data1.length > 0 && data2.length > 0 && (
+          <div className="chartGrid">
+            <div className="chartCard">
+              <div className="chartTitle">Évolution des précipitations</div>
+              <ResponsiveContainer width="100%" height={350}>
+                <LineChart>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="mois" type="category" allowDuplicatedCategory={false} />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line data={data1} dataKey="pluie" name="Année 1" stroke="#8884d8" />
+                  <Line data={data2} dataKey="pluie" name="Année 2" stroke="#82ca9d" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
+        {/* Résumés statistiques */}
+        {(stats1 && stats2) && (
+          <div className="statsBox">
+            <h3>📈 Statistiques</h3>
+            <div className="statGroup">
+              <div>
+                <h4>Année 1</h4>
+                <p>Moyenne : {stats1.moyenne.toFixed(2)} mm</p>
+                <p>Min : {stats1.min.toFixed(2)} mm</p>
+                <p>Max : {stats1.max.toFixed(2)} mm</p>
+              </div>
+              <div>
+                <h4>Année 2</h4>
+                <p>Moyenne : {stats2.moyenne.toFixed(2)} mm</p>
+                <p>Min : {stats2.min.toFixed(2)} mm</p>
+                <p>Max : {stats2.max.toFixed(2)} mm</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
