@@ -19,6 +19,14 @@
       letter-spacing: 1.2px;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
+    .logo-img {
+      width: 180px;
+      height: auto;
+      display: block;
+      margin-top : 20px;
+      padding-top:38px;
+    }
+    
   }
 
   hr {
@@ -30,6 +38,7 @@
 
   .center {
     padding: 20px 15px;
+    margin-top:39px;
 
     ul {
       list-style: none;

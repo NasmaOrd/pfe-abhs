@@ -14,6 +14,8 @@ import "./style/dark.scss";
 import { useContext, useState, useEffect } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import DataSearchPage from "./pages/datasearchpage/DataSearchPage";
+import HydroFilter from "./pages/station/HydroFilter";
+import HydroFilterProvince from "./pages/province/HydroFilterProvince";
 
 /**
  * @file App.jsx
@@ -63,7 +65,7 @@ function App() {
         <Routes>
           <Route path="/">
             {/* Page d'accueil */}
-            <Route index element={auth ? <Home /> : <Navigate to="/login" />} />
+            <Route index element={auth ? <Stations/> : <Navigate to="/login" />} />
 
             {/* Page de login */}
             <Route path="login" element={auth ? <Navigate to="/" /> : <Login />} />
@@ -85,6 +87,8 @@ function App() {
             {/* Routes personnalisées pour les modules spécifiques */}
             <Route path="data" element={auth ? <Data /> : <Navigate to="/login" />} />
              <Route path="visualisation" element={<DataSearchPage />} />
+             <Route path="station" element={<HydroFilter />} />
+             <Route path="province" element={<HydroFilterProvince />} />
             <Route path="stations" element={auth ? <Stations /> : <Navigate to="/login" />} />
             <Route path="analyses" element={auth ? <Analyses /> : <Navigate to="/login" />} />
             <Route path="modele" element={auth ? <Modele /> : <Navigate to="/login" />} />

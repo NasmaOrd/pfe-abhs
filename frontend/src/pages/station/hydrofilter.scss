@@ -1,0 +1,100 @@
+// HydroFilter.scss
+
+.hydro-filter {
+    padding: 20px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8fafc; // fond très clair
+    width: 100%;
+  
+    h2 {
+      color: #1e3a8a; // bleu foncé
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+  
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+  
+      > div {
+        min-width: 200px;
+  
+        label {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 6px;
+          color: #334155;
+        }
+  
+        .react-select__control {
+          border-radius: 6px;
+          border-color: #cbd5e1;
+        }
+      }
+    }
+  
+    .view-buttons {
+      margin-bottom: 20px;
+  
+      button {
+        background-color: #1e40af;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        margin-right: 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: #3b82f6;
+        }
+  
+        &.active {
+          background-color: #2563eb;
+        }
+      }
+    }
+  
+    .table-container {
+      overflow-x: auto;
+  
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  
+        th, td {
+          padding: 10px 12px;
+          border: 1px solid #e2e8f0;
+          text-align: left;
+          font-size: 14px;
+          color: #1e293b;
+        }
+  
+        th {
+          background-color: #f1f5f9;
+          font-weight: 700;
+          color: #1e40af;
+        }
+  
+        tr:hover {
+          background-color: #f0f9ff;
+        }
+      }
+    }
+  
+    .chart-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      max-width: 900px;
+      margin-top: 20px;
+    }
+  }
+  
