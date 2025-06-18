@@ -55,8 +55,8 @@ function DataSearchPage() {
   };
 
   const handleOpenInStreamlit = (stationId, fileName) => {
-    const fileUrl = encodeURIComponent(`http://localhost:5000/uploads/${fileName}`);
-    const streamlitUrl = `http://localhost:8501/?station=${stationId}&fileurl=${fileUrl}`;
+    const fileUrl = encodeURIComponent(`${fileName}`);
+    const streamlitUrl = `http://localhost:8501/?station=${stationId}&file=${fileUrl}`;
     window.open(streamlitUrl, "_blank");
   };
 
