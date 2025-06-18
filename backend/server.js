@@ -8,17 +8,18 @@ const fs = require("fs");
 const authRoutes = require("./routes/auth");
 
 dotenv.config();
-
 const app = express();
+const router = express.Router();
 
-// Origines autorisées
+const uploadDir = path.join(__dirname, "uploads");
+
+// Middleware CORS
 const allowedOrigins = [
   "https://pfe-abhs.vercel.app",
   "https://pfe-abhs.web.app",
   "http://localhost:3000",
 ];
 
-// Middleware CORS
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -35,7 +36,7 @@ app.use(
 
 app.use(express.json());
 
-// 📁 Configuration du stockage des fichiers avec Multer
+// 📁 Multer config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -47,29 +48,24 @@ const storage = multer.diskStorage({
     cb(null, newFilename);
   },
 });
-
 const upload = multer({ storage });
 
-// 📤 Upload d’un fichier CSV lié à une station
+// 📤 Upload fichier
 app.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "Aucun fichier reçu" });
-  }
+  if (!req.file) return res.status(400).json({ error: "Aucun fichier reçu" });
 
   const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
   console.log("✅ Fichier uploadé :", fileUrl);
   res.json({ fileUrl });
 });
 
-// 📥 Récupération des fichiers pour une station donnée
+// 📥 Liste des fichiers pour une station
 app.get("/api/files/:stationId", (req, res) => {
   const stationId = req.params.stationId;
-  const uploadsPath = path.join(__dirname, "uploads");
 
-  fs.readdir(uploadsPath, (err, files) => {
+  fs.readdir(uploadDir, (err, files) => {
     if (err) return res.status(500).json({ error: "Erreur lecture du dossier uploads" });
 
-    // Filtrer les fichiers qui commencent par l'id de la station suivi d'un underscore
     const matchingFiles = files.filter(file =>
       file.startsWith(`${stationId}_`) && /\.(csv|xlsx)$/i.test(file)
     );
@@ -78,18 +74,68 @@ app.get("/api/files/:stationId", (req, res) => {
   });
 });
 
-// Accès public aux fichiers uploadés
+// 📂 Accès statique aux fichiers
 app.use("/uploads", express.static("uploads"));
 
-// Auth API
-app.use("/api/auth", authRoutes);
+// ✅ 🔍 Recherche par nom (obligatoire) et date (optionnelle)
+app.post("/api/files/search", async (req, res) => {
+  const { stationName, date } = req.body;
 
-// Test route
+  try {
+    const matchedFiles = [];
+
+    const files = fs.readdirSync(uploadDir).filter(f => f.endsWith('.csv') || f.endsWith('.xlsx'));
+
+    for (let file of files) {
+      const [stationId, ...rest] = file.split('_');
+      const fullName = rest.join('_');
+
+      if (!stationName || !file.toLowerCase().includes(stationName.toLowerCase())) continue;
+
+      if (date) {
+        const content = fs.readFileSync(path.join(uploadDir, file), 'utf8');
+        if (!content.includes(date)) continue;
+      }
+
+      matchedFiles.push({ fileName: file, stationId, stationName: fullName });
+    }
+
+    res.json(matchedFiles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erreur lors de la recherche");
+  }
+});
+
+// ✅ 🔁 Liste dynamique des stations avec leurs fichiers
+app.get("/api/stations", (req, res) => {
+  fs.readdir(uploadDir, (err, files) => {
+    if (err) return res.status(500).json({ error: "Erreur lecture du dossier uploads" });
+
+    const stationMap = {}; // { 1: [file1, file2], 2: [...] }
+
+    files.forEach(file => {
+      const match = file.match(/^(\d+)_/);
+      if (match) {
+        const stationId = match[1];
+        if (!stationMap[stationId]) stationMap[stationId] = [];
+        stationMap[stationId].push(file);
+      }
+    });
+
+    res.json(stationMap);
+  });
+});
+
+// ✅ Route test
 app.get("/", (req, res) => {
   res.send("API opérationnelle 🚀");
 });
 
-// Connexion MongoDB et lancement serveur
+// ✅ Auth
+app.use("/api/auth", authRoutes);
+
+// ✅ Connexion MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

@@ -13,6 +13,7 @@ import { productInputs, userInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext, useState, useEffect } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
+import DataSearchPage from "./pages/datasearchpage/DataSearchPage";
 
 /**
  * @file App.jsx
@@ -83,6 +84,7 @@ function App() {
 
             {/* Routes personnalisées pour les modules spécifiques */}
             <Route path="data" element={auth ? <Data /> : <Navigate to="/login" />} />
+             <Route path="visualisation" element={<DataSearchPage />} />
             <Route path="stations" element={auth ? <Stations /> : <Navigate to="/login" />} />
             <Route path="analyses" element={auth ? <Analyses /> : <Navigate to="/login" />} />
             <Route path="modele" element={auth ? <Modele /> : <Navigate to="/login" />} />

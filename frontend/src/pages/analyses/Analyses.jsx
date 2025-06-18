@@ -18,28 +18,16 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-/**
- * Calcule la moyenne d'un tableau de nombres.
- * @param {number[]} arr - Tableau de nombres.
- * @returns {number} Moyenne.
- */
 const moyenne = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
-
-/**
- * Calcule l'écart-type d'un tableau de nombres.
- * @param {number[]} arr - Tableau de nombres.
- * @param {number} mean - Moyenne des nombres.
- * @returns {number} Écart-type.
- */
 const ecartType = (arr, mean) =>
   Math.sqrt(arr.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / arr.length);
 
 /**
- * Calcule la droite de tendance (régression linéaire) pour les données.
- * @param {{mois: string, pluie: number}[]} data - Données avec mois et pluie.
- * @returns {{mois: string, tendance: number}[]} Données avec mois et valeur de tendance.
+ * Calcule la droite de tendance (régression linéaire).
+ * @param {Array} data - Données [{mois, pluie}].
+ * @returns {Array} Données [{mois, tendance}] pour la droite.
  */
 const calculerTendance = (data) => {
   const n = data.length;
@@ -62,10 +50,6 @@ const Analyses = () => {
   const [stats, setStats] = useState(null);
   const [tendance, setTendance] = useState([]);
 
-  /**
-   * Gestion du chargement du fichier CSV et calcul des anomalies.
-   * @param {React.ChangeEvent<HTMLInputElement>} event - Événement de changement du fichier.
-   */
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -86,12 +70,10 @@ const Analyses = () => {
           return;
         }
 
-        // Calcul statistiques
         const values = parsedData.map((d) => d.pluie);
         const mean = moyenne(values);
         const std = ecartType(values, mean);
 
-        // Détection d'anomalies (z-score > 1 ou < -1)
         const withAnomalies = parsedData.map((d) => {
           const z = (d.pluie - mean) / std;
           let anomalie = null;
@@ -113,22 +95,12 @@ const Analyses = () => {
     });
   };
 
-  /**
-   * Rend un petit cercle coloré indiquant le type d'anomalie.
-   * @param {string|null} value - Type d'anomalie ("haute", "basse", ou null).
-   * @returns {JSX.Element|string} Élément React ou chaîne vide.
-   */
   const renderColoredDot = (value) => {
     if (value === "haute") return <span style={{ color: "red" }}>🔴 Haute</span>;
     if (value === "basse") return <span style={{ color: "orange" }}>🟧 Basse</span>;
     return "-";
   };
 
-  /**
-   * Rend un point personnalisé sur le graphique selon l'anomalie.
-   * @param {Object} props - Propriétés du point.
-   * @returns {JSX.Element|null} Cercle SVG ou null.
-   */
   const renderCustomDot = ({ cx, cy, payload }) => {
     if (cx === undefined || cy === undefined) return null;
 
@@ -139,9 +111,6 @@ const Analyses = () => {
     return <circle cx={cx} cy={cy} r={5} fill={fillColor} stroke="#555" strokeWidth={1} />;
   };
 
-  /**
-   * Exporte les anomalies détectées sous forme d'un fichier CSV.
-   */
   const exporterAnomaliesCSV = () => {
     const anomalies = data.filter((d) => d.anomalie);
     if (anomalies.length === 0) {
