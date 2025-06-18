@@ -8,12 +8,9 @@ const fs = require("fs");
 const authRoutes = require("./routes/auth");
 
 dotenv.config();
+
 const app = express();
-const router = express.Router();
 
-const uploadDir = path.join(__dirname, "uploads");
-
-// Middleware CORS
 const allowedOrigins = [
   "https://pfe-abhs.vercel.app",
   "https://pfe-abhs.web.app",
@@ -36,7 +33,6 @@ app.use(
 
 app.use(express.json());
 
-// 📁 Multer config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -48,22 +44,28 @@ const storage = multer.diskStorage({
     cb(null, newFilename);
   },
 });
-const upload = multer({ storage });
 
-// 📤 Upload fichier
+const upload = multer({ storage });
+const uploadDir = path.join(__dirname, "uploads");
+const stationMap = require('./data/stations.json'); // { "1": "Pont du Mdez (Sebbou)", ... }
+
+// 📤 Upload d’un fichier CSV lié à une station
 app.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "Aucun fichier reçu" });
+  if (!req.file) {
+    return res.status(400).json({ error: "Aucun fichier reçu" });
+  }
 
   const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
   console.log("✅ Fichier uploadé :", fileUrl);
   res.json({ fileUrl });
 });
 
-// 📥 Liste des fichiers pour une station
+// 📥 Récupération des fichiers pour une station donnée
 app.get("/api/files/:stationId", (req, res) => {
   const stationId = req.params.stationId;
+  const uploadsPath = path.join(__dirname, "uploads");
 
-  fs.readdir(uploadDir, (err, files) => {
+  fs.readdir(uploadsPath, (err, files) => {
     if (err) return res.status(500).json({ error: "Erreur lecture du dossier uploads" });
 
     const matchingFiles = files.filter(file =>
@@ -74,68 +76,85 @@ app.get("/api/files/:stationId", (req, res) => {
   });
 });
 
-// 📂 Accès statique aux fichiers
-app.use("/uploads", express.static("uploads"));
+// 📃 Récupération de tous les fichiers CSV
+app.get("/api/files/all", (req, res) => {
+  const uploadsDir = path.join(__dirname, "uploads");
+  console.log("Chemin uploads utilisé :", uploadsDir);
 
-// ✅ 🔍 Recherche par nom (obligatoire) et date (optionnelle)
-app.post("/api/files/search", async (req, res) => {
-  const { stationName, date } = req.body;
-
-  try {
-    const matchedFiles = [];
-
-    const files = fs.readdirSync(uploadDir).filter(f => f.endsWith('.csv') || f.endsWith('.xlsx'));
-
-    for (let file of files) {
-      const [stationId, ...rest] = file.split('_');
-      const fullName = rest.join('_');
-
-      if (!stationName || !file.toLowerCase().includes(stationName.toLowerCase())) continue;
-
-      if (date) {
-        const content = fs.readFileSync(path.join(uploadDir, file), 'utf8');
-        if (!content.includes(date)) continue;
-      }
-
-      matchedFiles.push({ fileName: file, stationId, stationName: fullName });
+  fs.readdir(uploadsDir, (err, files) => {
+    if (err) {
+      console.error("Erreur lecture uploads :", err);
+      return res.status(500).json({ error: "Erreur serveur" });
     }
-
-    res.json(matchedFiles);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Erreur lors de la recherche");
-  }
-});
-
-// ✅ 🔁 Liste dynamique des stations avec leurs fichiers
-app.get("/api/stations", (req, res) => {
-  fs.readdir(uploadDir, (err, files) => {
-    if (err) return res.status(500).json({ error: "Erreur lecture du dossier uploads" });
-
-    const stationMap = {}; // { 1: [file1, file2], 2: [...] }
-
-    files.forEach(file => {
-      const match = file.match(/^(\d+)_/);
-      if (match) {
-        const stationId = match[1];
-        if (!stationMap[stationId]) stationMap[stationId] = [];
-        stationMap[stationId].push(file);
-      }
-    });
-
-    res.json(stationMap);
+    const csvFiles = files.filter(f => f.endsWith(".csv"));
+    res.json(csvFiles);
   });
 });
 
-// ✅ Route test
+// 📌 Récupération des stations pour les suggestions
+app.get("/api/stations", (req, res) => {
+  res.json(stationMap);
+});
+
+// 🔍 Recherche avancée : par nom de station et date
+app.post('/api/files/search', async (req, res) => {
+  const { stationName, date } = req.body;
+  const uploadsDir = path.join(__dirname, 'uploads');
+
+  try {
+    const allFiles = await fs.promises.readdir(uploadsDir);
+
+    // Filtrer uniquement les fichiers liés à la station demandée
+    const matchingFiles = allFiles.filter(file => {
+      const fileParts = file.split('_');
+      if (fileParts.length < 2) return false;
+
+      const stationId = fileParts[0];
+      const name = fileParts.slice(1).join('_'); // nomDuFichier.csv
+
+      // Vérifie si la station correspond
+      const isMatch = stationName
+        ? name.toLowerCase().includes(stationName.toLowerCase())
+        : true;
+
+      // Vérifie si la date correspond (si spécifiée)
+      const isDateMatch = date
+        ? name.toLowerCase().includes(date.toLowerCase())
+        : true;
+
+      return isMatch && isDateMatch;
+    });
+
+    // Format de retour
+    const result = matchingFiles.map(file => {
+      const [stationId, ...rest] = file.split('_');
+      return {
+        fileName: file,
+        stationId,
+        stationName // Si besoin, retrouve le nom par ID si tu as une map id → nom
+      };
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error('Erreur recherche de fichiers :', err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+
+// 📂 Fichiers uploadés accessibles publiquement
+app.use("/uploads", express.static("uploads"));
+
+// 🔐 Auth API
+app.use("/api/auth", authRoutes);
+
+// ✅ Test route
 app.get("/", (req, res) => {
   res.send("API opérationnelle 🚀");
 });
 
-// ✅ Auth
-app.use("/api/auth", authRoutes);
-
-// ✅ Connexion MongoDB
+// 🔌 Connexion MongoDB + Lancement serveur
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

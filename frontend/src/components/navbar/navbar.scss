@@ -1,31 +1,50 @@
 .navbar {
-  height: 50px;
-  border-bottom: 0.5px solid rgb(231, 228, 228);
+  height: 60px;
+  border-bottom: 1px solid #e0e6f1;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   font-size: 14px;
-  color: #555;
+  color: #334155;
+  box-shadow: 0 2px 6px rgba(100, 115, 150, 0.08);
 
   .wrapper {
     width: 100%;
-    padding: 20px;
+    padding: 0 20px;
     display: flex;
+      margin-bottom: 40px;  // marge plus grande en bas
+  margin-top: 20px;  // marge plus grande en bas
+
     align-items: center;
     justify-content: space-between;
 
     .search {
+      flex: 1;              // prend tout l’espace possible
+      max-width: 500px;     // largeur max (ajuste si besoin)
       display: flex;
       align-items: center;
-      border: 0.5px solid lightgray;
-      padding: 3px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 16px;    // un peu plus de padding pour confort
+      background-color: #f9fafb;
+      transition: border-color 0.3s ease;
+
+      &:focus-within {
+        border-color: #3b82f6;
+        box-shadow: 0 0 6px #3b82f6aa;
+      }
 
       input {
+        width: 100%;        // input prend toute la place dispo
         border: none;
         outline: none;
         background: transparent;
+        font-size: 15px;
+        color: #334155;
 
         &::placeholder {
-          font-size: 12px;
+          font-size: 14px;
+          color: #94a3b8;
         }
       }
     }
@@ -33,37 +52,49 @@
     .items {
       display: flex;
       align-items: center;
+      margin-left: 20px;    // espace entre recherche et items
 
       .item {
         display: flex;
         align-items: center;
-        margin-right: 20px;
+        margin-right: 24px;
         position: relative;
+        color: #64748b;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #3b82f6;
+        }
 
         .icon {
-          font-size: 20px;
+          font-size: 22px;
+          margin-right: 6px;
         }
 
         .avatar {
-          width: 30px;
-          height: 30px;
+          width: 34px;
+          height: 34px;
           border-radius: 50%;
+          border: 2px solid #3b82f6;
+          object-fit: cover;
         }
 
         .counter {
-          width: 15px;
-          height: 15px;
-          background-color: red;
+          width: 16px;
+          height: 16px;
+          background-color: #ef4444;
           border-radius: 50%;
           color: white;
+          font-weight: 700;
+          font-size: 11px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 10px;
-          font-weight: bold;
           position: absolute;
-          top: -5px;
-          right: -5px;
+          top: -6px;
+          right: -6px;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
         }
       }
     }

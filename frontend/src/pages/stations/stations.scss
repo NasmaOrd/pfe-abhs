@@ -1,31 +1,116 @@
 .stations {
   display: flex;
+  background-color: #f9f9fb; // fond clair assorti sidebar
+  min-height: 100vh;
 
   .stationsContainer {
     flex: 6;
-    padding: 20px;
+    padding: 20px 30px;
+    background-color: #ffffff; // blanc pur pour zone principale
+    border-radius: 12px;
+    margin: 20px;
+    box-shadow: 0 6px 15px rgba(100, 81, 248, 0.1); // ombre douce violette
+    display: flex;
+    flex-direction: column;
 
-    .stationCard {
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      background-color: #f5f5f5;
+    // Navbar déjà stylée
+
+    h2 {
+      color: #6451f8; // violet principal sidebar
+      font-weight: 700;
+      font-size: 28px;
+      margin-bottom: 25px;
     }
 
-    .stationTitle {
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-  }
-}
-.stationsPage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
+    .mapContainer {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(100, 81, 248, 0.15);
+      margin-bottom: 30px;
 
-  h2 {
-    margin-bottom: 10px;
+      .leaflet-container {
+        border-radius: 12px !important;
+      }
+    }
+
+    .stationDetails {
+      background-color: #f5f6fa; // fond très clair pour la zone détails
+      border-radius: 12px;
+      padding: 20px 25px;
+      box-shadow: 0 2px 10px rgba(100, 81, 248, 0.1);
+
+      h3 {
+        color: #3b49c4;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      p {
+        color: #555c7a;
+        font-size: 15px;
+        margin-bottom: 10px;
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 15px;
+
+        li {
+          margin-bottom: 8px;
+          font-size: 14px;
+          color: #444a6d;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          button {
+            background-color: #6451f8;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+              background-color: #4a3bcc;
+            }
+          }
+        }
+      }
+
+      input[type="file"] {
+        margin-top: 10px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        color: #6451f8;
+      }
+
+      button {
+        background-color: #6451f8;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:disabled {
+          background-color: #a79bf8;
+          cursor: not-allowed;
+        }
+
+        &:not(:disabled):hover {
+          background-color: #4a3bcc;
+        }
+      }
+
+      p[style*="color: red"] {
+        font-weight: 600;
+      }
+    }
   }
 }

@@ -33,14 +33,6 @@ const Navbar = () => {
 
         {/* Ensemble des icônes */}
         <div className="items">
-          {/* Bouton pour activer/désactiver le mode sombre */}
-          <div className="item">
-            <DarkModeOutlinedIcon
-              className="icon"
-              onClick={() => dispatch({ type: "TOGGLE" })}
-            />
-          </div>
-
           {/* Icône de plein écran */}
           <div className="item">
             <FullscreenExitOutlinedIcon className="icon" />
@@ -58,10 +50,6 @@ const Navbar = () => {
             <div className="counter">2</div>
           </div>
 
-          {/* Icône de menu déroulant */}
-          <div className="item">
-            <ListOutlinedIcon className="icon" />
-          </div>
 
           {/* Avatar utilisateur */}
           <div className="item">

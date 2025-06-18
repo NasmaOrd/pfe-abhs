@@ -49,12 +49,6 @@ const Sidebar = () => {
 
           {/* Section GESTION */}
           <p className="title">GESTION</p>
-          <Link to="/users" style={{ textDecoration: "none" }}>
-            <li>
-              <PeopleAltIcon className="icon" />
-              <span>Employés</span>
-            </li>
-          </Link>
           <Link to="/stations" style={{ textDecoration: "none" }}>
             <li>
               <WaterDropIcon className="icon" />
@@ -73,7 +67,7 @@ const Sidebar = () => {
               <span>Analyses mensuelles</span>
             </li>
           </Link>
-          <Link to="/modele" style={{ textDecoration: "none" }}>
+          <Link to="/visualisation" style={{ textDecoration: "none" }}>
             <li>
               <FunctionsIcon className="icon" />
               <span>Modèle de simulation</span>
@@ -94,14 +88,6 @@ const Sidebar = () => {
           {/* Section SYSTÈME */}
           <p className="title">SYSTÈME</p>
           <li>
-            <SensorsIcon className="icon" />
-            <span>État des capteurs</span>
-          </li>
-          <li>
-            <HistoryIcon className="icon" />
-            <span>Historique</span>
-          </li>
-          <li>
             <SettingsIcon className="icon" />
             <span>Paramètres</span>
           </li>
@@ -120,16 +106,6 @@ const Sidebar = () => {
       </div>
 
       {/* Choix du thème (clair ou sombre) */}
-      <div className="bottom">
-        <div
-          className="colorOption"
-          onClick={() => dispatch({ type: "LIGHT" })}
-        ></div>
-        <div
-          className="colorOption"
-          onClick={() => dispatch({ type: "DARK" })}
-        ></div>
-      </div>
     </div>
   );
 };

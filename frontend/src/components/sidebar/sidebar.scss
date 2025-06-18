@@ -1,29 +1,35 @@
 .sidebar {
-  flex: 1;
-  border-right: 0.5px solid rgb(230, 227, 227);
+  flex: 0 0 20%;
+  border-right: 1px solid #e0e6f1; // gris très clair
   min-height: 100vh;
-  background-color: white;
+  background-color: #ffffff; // blanc pur
+  box-shadow: 2px 0 8px rgba(100, 115, 150, 0.1); // ombre légère
 
   .top {
-    height: 50px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-bottom: 1px solid #e0e6f1;
 
     .logo {
-      font-size: 20px;
-      font-weight: bold;
-      color: #6439ff;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e40af; // bleu foncé (taille)
+      letter-spacing: 1.2px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
   }
 
   hr {
-    height: 0;
-    border: 0.5px solid rgb(230, 227, 227);
+    border: none;
+    height: 1px;
+    background-color: #e0e6f1;
+    margin: 0 12px;
   }
 
   .center {
-    padding-left: 10px;
+    padding: 20px 15px;
 
     ul {
       list-style: none;
@@ -31,60 +37,77 @@
       padding: 0;
 
       .title {
-        font-size: 10px;
-        font-weight: bold;
-        color: #999;
-        margin-top: 15px;
-        margin-bottom: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b; // bleu gris clair
+        margin-top: 25px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
 
       li {
         display: flex;
         align-items: center;
-        padding: 5px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border-radius: 8px;
         cursor: pointer;
+        color: #334155; // bleu gris foncé
+
+        transition: background-color 0.3s ease, color 0.3s ease;
 
         &:hover {
-          background-color: #ece8ff;
+          background-color: #e0e7ff; // bleu clair doux
+          color: #1e40af; // bleu plus foncé
+          box-shadow: inset 4px 0 0 #1e40af; // barre bleue à gauche
         }
 
         .icon {
-          font-size: 18px;
-          color: #7451f8;
+          font-size: 20px;
+          color: #3b82f6; // bleu vif
+          margin-right: 12px;
+          flex-shrink: 0;
         }
 
-        span{
-            font-size: 13px;
-            font-weight: 600;
-            color: #888;
-            margin-left: 10px;
+        span {
+          font-size: 15px;
+          font-weight: 600;
+          color: inherit; // prend la couleur du li
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         }
       }
     }
   }
 
-  .bottom{
-      display: flex;
-      align-items: center;
-      margin: 10px;
+  .bottom {
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
 
-      .colorOption{
-          width: 20px;
-          height: 20px;
-          border-radius: 5px;
-          border: 1px solid #7451f8;
-          cursor: pointer;
-          margin: 5px;
+    .colorOption {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      margin: 0 8px;
+      transition: border-color 0.3s ease;
 
-          &:nth-child(1){
-              background-color: whitesmoke;
-          }
-          &:nth-child(2){
-              background-color: #333;
-          }
-          &:nth-child(3){
-              background-color: darkblue;
-          }
+      &:nth-child(1) {
+        background-color: #e0e7ff; // bleu clair
       }
+      &:nth-child(2) {
+        background-color: #3b82f6; // bleu vif
+      }
+      &:nth-child(3) {
+        background-color: #1e40af; // bleu foncé
+      }
+
+      &:hover {
+        border-color: #1e40af;
+      }
+    }
   }
 }
