@@ -1,4 +1,3 @@
-// ✅ HydroFilterProvince.jsx complet avec toutes les fonctionnalités restaurées et comparaison AO5:AS53
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { Line } from "react-chartjs-2";
@@ -27,44 +26,35 @@ const HydroFilterProvince = () => {
   const [selectedYears, setSelectedYears] = useState([]);
   const [months] = useState(["Sep", "Oct", "Nov", "Déc", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août"]);
   const [selectedMonths, setSelectedMonths] = useState([]);
-  const [viewMode, setViewMode] = useState("historique");
+  const [viewMode, setViewMode] = useState("tableau");
   const [date1, setDate1] = useState("");
   const [date2, setDate2] = useState("");
   const [comparisonData, setComparisonData] = useState([]);
 
+  useEffect(() => { fetchFromGoogleSheet(); }, []);
+
   const fetchFromGoogleSheet = async () => {
     try {
-      const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw/values/Feuil1!A1:Z1000?key=AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs`;
-      const res = await fetch(sheetUrl);
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw/values/Feuil1!A1:Z1000?key=AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs`;
+      const res = await fetch(url);
       const result = await res.json();
-
       const headers = result.values[0];
       const rows = result.values.slice(1);
       const jsonData = rows.map((row) => {
         const obj = {};
-        headers.forEach((key, i) => {
-          obj[key.trim()] = row[i] || "";
-        });
+        headers.forEach((key, i) => { obj[key.trim()] = row[i] || ""; });
         return obj;
       });
       setData(jsonData);
-      setProvinces([...new Set(jsonData.map((row) => row["Province:"]))]);
-      setYears([...new Set(jsonData.map((row) => row["Année"]))]);
+      setProvinces([...new Set(jsonData.map((r) => r["Province:"]))]);
+      setYears([...new Set(jsonData.map((r) => r["Année"]))]);
     } catch (err) {
-      console.error("Erreur chargement Sheets:", err);
+      console.error("Erreur chargement Sheets :", err);
     }
   };
 
-  useEffect(() => {
-    fetchFromGoogleSheet();
-  }, []);
-
   const filterData = () => {
-    return data.filter(
-      (row) =>
-        (!selectedProvince || row["Province:"] === selectedProvince) &&
-        (selectedYears.length === 0 || selectedYears.includes(row["Année"]))
-    );
+    return data.filter((row) => (!selectedProvince || row["Province:"] === selectedProvince) && (selectedYears.length === 0 || selectedYears.includes(row["Année"])));
   };
 
   const filtered = filterData();
@@ -93,34 +83,28 @@ const HydroFilterProvince = () => {
         body: JSON.stringify({ date1, date2 }),
       });
       const result = await res.json();
-      console.log("✅ Serveur:", result);
       fetchComparisonData();
-    } catch (error) {
-      console.error("❌ Erreur envoi dates:", error);
+    } catch (err) {
+      console.error("Erreur envoi des dates :", err);
     }
   };
 
   const fetchComparisonData = async () => {
     try {
-      const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw/values/Feuil1!AO5:AS53?key=AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs`;
-      const res = await fetch(sheetUrl);
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw/values/Feuil1!AO5:AS53?key=AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs`;
+      const res = await fetch(url);
       const result = await res.json();
-      if (!result.values || result.values.length === 0) {
-        setComparisonData([]);
-        return;
-      }
-      const transformed = result.values.map((row, rowIndex) => {
-        if (rowIndex === 0) {
-          return [...row.slice(0, 4), "Déficit"];
-        } else {
-          const rawValue = row[4];
-          const value = parseFloat(rawValue?.replace('%', '')) || 0;
-          return [...row.slice(0, 4), `${(value*100).toFixed(1)}%`];
-        }
+      if (!result.values || result.values.length === 0) return setComparisonData([]);
+      const transformed = result.values.map((row, i) => {
+        if (i === 0) return [...row.slice(0, 4), "Déficit"];
+        const raw = row[4];
+        const value = parseFloat((raw || "").replace("%", ""));
+        const deficit = isNaN(value) ? "" : `${(value * 100).toFixed(1)}%`;
+        return [...row.slice(0, 4), deficit];
       });
       setComparisonData(transformed);
     } catch (err) {
-      console.error("❌ Erreur comparaison:", err);
+      console.error("Erreur comparaison :", err);
       setComparisonData([]);
     }
   };
@@ -131,44 +115,67 @@ const HydroFilterProvince = () => {
       <div className="hydro-filter">
         <h2>Analyse des Données Hydrologiques</h2>
 
-        <div className="view-buttons">
-          <button onClick={() => setViewMode("historique")} className={viewMode === "historique" ? "active" : ""}>Historique</button>
-          <button onClick={() => setViewMode("carte")} className={viewMode === "carte" ? "active" : ""}>Carte</button>
-          <button onClick={() => setViewMode("comparaison")} className={viewMode === "comparaison" ? "active" : ""}>Comparaison</button>
+        <div className="tab-navigation">
+          {["tableau", "graphique", "carte", "comparaison"].map((mode) => (
+            <button key={mode} className={viewMode === mode ? "active" : ""} onClick={() => setViewMode(mode)}>
+              {mode.charAt(0).toUpperCase() + mode.slice(1)}
+            </button>
+          ))}
         </div>
 
-        {viewMode === "historique" && (
+        {(viewMode === "tableau" || viewMode === "graphique") && (
           <>
             <div className="filters">
-              <div>
-                <label>Province :</label>
-                <Select options={provinces.map((p) => ({ value: p, label: p }))} onChange={(e) => setSelectedProvince(e?.value || null)} isClearable placeholder="Choisir une province" />
-              </div>
-              <div>
-                <label>Année(s) :</label>
-                <Select options={years.map((y) => ({ value: y, label: y }))} onChange={(e) => setSelectedYears(e ? e.map((i) => i.value) : [])} isMulti placeholder="Choisir des années" />
-              </div>
-              <div>
-                <label>Mois :</label>
-                <Select options={months.map((m) => ({ value: m, label: m }))} onChange={(e) => setSelectedMonths(e ? e.map((i) => i.value) : [])} isMulti placeholder="Mois à afficher" />
-              </div>
+              <Select options={provinces.map((p) => ({ value: p, label: p }))} onChange={(e) => setSelectedProvince(e?.value || null)} isClearable placeholder="Choisir une province" />
+              <Select options={years.map((y) => ({ value: y, label: y }))} onChange={(e) => setSelectedYears(e ? e.map((i) => i.value) : [])} isMulti placeholder="Années" />
+              <Select options={months.map((m) => ({ value: m, label: m }))} onChange={(e) => setSelectedMonths(e ? e.map((i) => i.value) : [])} isMulti placeholder="Mois" />
             </div>
-            <div className="table-or-chart">
-              {selectedMonths.length > 0 ? <Line data={chartData} /> : <p>Sélectionnez des mois pour afficher la courbe.</p>}
-            </div>
+            {viewMode === "tableau" && (
+              <div className="data-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Station</th>
+                      <th>Province</th>
+                      <th>Année</th>
+                      {selectedMonths.map((m, i) => (
+                        <th key={i}>{m}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((row, i) => (
+                      <tr key={i}>
+                        <td>{row["Station"] || row["Nom du poste"]}</td>
+                        <td>{row["Province:"]}</td>
+                        <td>{row["Année"]}</td>
+                        {selectedMonths.map((m, j) => (
+                          <td key={j}>{parseFloat(row[m])?.toFixed(1) || "-"}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {viewMode === "graphique" && (
+              <div className="chart-section">
+                {selectedMonths.length > 0 ? <Line data={chartData} /> : <p>Sélectionnez des mois pour voir le graphique.</p>}
+              </div>
+            )}
           </>
         )}
 
         {viewMode === "carte" && (
           <div className="mapContainer" style={{ height: "600px", marginTop: "20px" }}>
             <MapContainer center={[34.1, -5.1]} zoom={9} style={{ height: "100%", width: "100%" }}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
-              {filteredStations.map((station, idx) => (
-                <Marker key={idx} position={[station.latitude, station.longitude]}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {filteredStations.map((s, i) => (
+                <Marker key={i} position={[s.latitude, s.longitude]}>
                   <Popup>
-                    <strong>{station.nom}</strong>
-                    <br />Province: {station.province}
-                    <br />Altitude: {station.z} m
+                    <strong>{s.nom}</strong>
+                    <br />Province: {s.province}
+                    <br />Altitude: {s.z} m
                   </Popup>
                 </Marker>
               ))}
@@ -177,18 +184,17 @@ const HydroFilterProvince = () => {
         )}
 
         {viewMode === "comparaison" && (
-          <div>
-            <label>Date 1 :</label>
-            <input type="text" value={date1} onChange={(e) => setDate1(e.target.value)} placeholder="JJ/MM/AAAA" />
-            <label>Date 2 :</label>
-            <input type="text" value={date2} onChange={(e) => setDate2(e.target.value)} placeholder="JJ/MM/AAAA" />
-            <button onClick={sendDatesToServer}>Valider et comparer</button>
-
+          <div className="comparison-section">
+            <div className="dates-input">
+              <input type="text" value={date1} onChange={(e) => setDate1(e.target.value)} placeholder="JJ/MM/AAAA" />
+              <input type="text" value={date2} onChange={(e) => setDate2(e.target.value)} placeholder="JJ/MM/AAAA" />
+              <button onClick={sendDatesToServer}>Valider</button>
+            </div>
             {comparisonData.length > 0 && (
               <table className="comparison-table">
                 <thead>
                   <tr>
-                    {comparisonData[0].map((header, i) => <th key={i}>{header}</th>)}
+                    {comparisonData[0].map((h, i) => <th key={i}>{h}</th>)}
                   </tr>
                 </thead>
                 <tbody>

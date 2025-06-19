@@ -4,19 +4,42 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import MapIcon from "@mui/icons-material/Map";
 import PlaceIcon from "@mui/icons-material/Place";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 /**
- * Sidebar de navigation principale avec logo image.
+ * Sidebar de navigation avec déconnexion sécurisée.
  */
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
+  const navigate = useNavigate();
+
+  /**
+   * Déconnexion manuelle avec confirmation.
+   */
+  const handleLogout = () => {
+    const confirmed = window.confirm("Voulez-vous vous déconnecter ?");
+    if (confirmed) {
+      localStorage.removeItem("authToken");
+      navigate("https://pfe-abhs.web.app/login");
+    }
+  };
+
+  /**
+   * Déconnexion automatique à la fermeture de l’onglet.
+   */
+  useEffect(() => {
+    const handleUnload = () => {
+      localStorage.removeItem("authToken");
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, []);
 
   return (
     <div className="sidebar">
-      {/* Logo image au lieu du texte */}
       <div className="top">
         <Link to="/stations" style={{ textDecoration: "none" }}>
           <img src="/logo.png" alt="Logo ABHS" className="logo-img" />
@@ -49,7 +72,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          <li>
+          <li onClick={handleLogout} style={{ cursor: "pointer" }}>
             <ExitToAppIcon className="icon" />
             <span>Déconnexion</span>
           </li>
