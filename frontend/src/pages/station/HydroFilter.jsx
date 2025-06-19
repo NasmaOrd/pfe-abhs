@@ -1,10 +1,10 @@
 /**
  * @file HydroFilter.jsx
- * @description Composant React pour le filtrage et l'affichage des données hydrologiques via un fichier Excel. Permet une visualisation tabulaire ou graphique.
+ * @description Composant React pour le filtrage et l'affichage des données hydrologiques depuis Google Sheets.
+ * Affiche les données par station, année et mois sous forme de tableau ou de graphique.
  */
 
-import React, { useEffect, useState, useContext } from "react";
-import * as XLSX from "xlsx";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { Line } from "react-chartjs-2";
 import {
@@ -15,78 +15,123 @@ import {
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 import Sidebar from "../../components/sidebar/Sidebar";
 import "./hydrofilter.scss";
-import { DarkModeContext } from "../../context/darkModeContext";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 /**
- * Composant principal pour afficher et filtrer les données Excel hydrologiques.
+ * Composant principal pour afficher les données hydrologiques par station
+ * à partir d'une feuille Google Sheet.
  * @component
  */
 const HydroFilter = () => {
+  /** @type {Array<Object>} */
   const [data, setData] = useState([]);
+
+  /** @type {Array<string>} */
   const [stations, setStations] = useState([]);
+
+  /** @type {string|null} */
   const [selectedStation, setSelectedStation] = useState(null);
+
+  /** @type {Array<string|number>} */
   const [years, setYears] = useState([]);
+
+  /** @type {Array<string|number>} */
   const [selectedYears, setSelectedYears] = useState([]);
+
+  /** @type {Array<string>} */
   const [months] = useState([
-    "Sep", "Oct", "Nov", "Déc", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août"
+    "Sep",
+    "Oct",
+    "Nov",
+    "Déc",
+    "Jan",
+    "Fév",
+    "Mar",
+    "Avr",
+    "Mai",
+    "Juin",
+    "Juil",
+    "Août",
   ]);
+
+  /** @type {Array<string>} */
   const [selectedMonths, setSelectedMonths] = useState([]);
+
+  /** @type {string} */
   const [viewMode, setViewMode] = useState("table");
 
-  const fetchExcel = async () => {
+  /**
+   * Récupère les données hydrologiques depuis Google Sheets via API
+   */
+  const fetchFromGoogleSheet = async () => {
     try {
-      const res = await fetch("http://localhost:5000/uploads/data.xlsx");
-      const blob = await res.blob();
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const workbook = XLSX.read(e.target.result, { type: "binary" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(sheet);
+      const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw/values/Feuil1!A1:Z1000?key=AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs`;
+      const res = await fetch(sheetUrl);
+      const result = await res.json();
 
-        const cleaned = json.map(row => {
-          const cleanedRow = {};
-          for (const key in row) {
-            if (!key.startsWith("__EMPTY")) {
-              cleanedRow[key.trim()] = row[key];
-            }
-          }
-          return cleanedRow;
+      if (!result.values || result.values.length === 0) {
+        console.error("❌ Feuille vide ou non accessible.");
+        return;
+      }
+
+      const headers = result.values[0];
+      const rows = result.values.slice(1);
+
+      const jsonData = rows.map((row) => {
+        const obj = {};
+        headers.forEach((key, i) => {
+          obj[key.trim()] = row[i] || ""; // garde les cellules vides
         });
+        return obj;
+      });
 
-        setData(cleaned);
-        setStations([...new Set(cleaned.map(row => row["Nom du poste"]))]);
-        setYears([...new Set(cleaned.map(row => row["Année"]))]);
-      };
-      reader.readAsBinaryString(blob);
+      setData(jsonData);
+      setStations([...new Set(jsonData.map((row) => row["Nom du poste"]))]);
+      setYears([...new Set(jsonData.map((row) => row["Année"]))]);
     } catch (err) {
-      console.error("Erreur lors du chargement :", err);
+      console.error("❌ Erreur chargement Google Sheets :", err);
     }
   };
 
   useEffect(() => {
-    fetchExcel();
+    fetchFromGoogleSheet();
   }, []);
 
+  /**
+   * Filtre les données selon la station et les années sélectionnées
+   * @returns {Array<Object>}
+   */
   const filterData = () => {
-    return data.filter(row =>
-      (!selectedStation || row["Nom du poste"] === selectedStation) &&
-      (selectedYears.length === 0 || selectedYears.includes(row["Année"]))
+    return data.filter(
+      (row) =>
+        (!selectedStation || row["Nom du poste"] === selectedStation) &&
+        (selectedYears.length === 0 || selectedYears.includes(row["Année"]))
     );
   };
 
   const filtered = filterData();
 
+  /**
+   * Données à afficher dans le graphique
+   */
   const chartData = {
-    labels: filtered.map(row => row["Année"]),
+    labels: filtered.map((row) => row["Année"]),
     datasets: selectedMonths.map((month, idx) => ({
       label: month,
-      data: filtered.map(row => {
+      data: filtered.map((row) => {
         const value = row[month];
         const numericValue = parseFloat(value);
         return isNaN(numericValue) ? null : numericValue;
@@ -96,8 +141,8 @@ const HydroFilter = () => {
       tension: 0.3,
       pointRadius: 4,
       pointHoverRadius: 6,
-      fill: false
-    }))
+      fill: false,
+    })),
   };
 
   return (
@@ -105,14 +150,14 @@ const HydroFilter = () => {
       <Sidebar />
 
       <div className="hydro-filter">
-        <h2>📊 Données Hydrologiques</h2>
+        <h2>📊 Données Hydrologiques par Station</h2>
 
         <div className="filters">
           <div>
             <label>Station :</label>
             <Select
-              options={stations.map(s => ({ value: s, label: s }))}
-              onChange={e => setSelectedStation(e ? e.value : null)}
+              options={stations.map((s) => ({ value: s, label: s }))}
+              onChange={(e) => setSelectedStation(e ? e.value : null)}
               isClearable
               placeholder="Choisir une station"
             />
@@ -121,8 +166,8 @@ const HydroFilter = () => {
           <div>
             <label>Année(s) :</label>
             <Select
-              options={years.map(y => ({ value: y, label: y }))}
-              onChange={e => setSelectedYears(e ? e.map(i => i.value) : [])}
+              options={years.map((y) => ({ value: y, label: y }))}
+              onChange={(e) => setSelectedYears(e ? e.map((i) => i.value) : [])}
               isMulti
               placeholder="Choisir des années"
             />
@@ -131,8 +176,10 @@ const HydroFilter = () => {
           <div>
             <label>Mois :</label>
             <Select
-              options={months.map(m => ({ value: m, label: m }))}
-              onChange={e => setSelectedMonths(e ? e.map(i => i.value) : [])}
+              options={months.map((m) => ({ value: m, label: m }))}
+              onChange={(e) =>
+                setSelectedMonths(e ? e.map((i) => i.value) : [])
+              }
               isMulti
               placeholder="Mois à afficher"
             />
@@ -140,8 +187,18 @@ const HydroFilter = () => {
         </div>
 
         <div className="view-buttons">
-          <button onClick={() => setViewMode("table")} className={viewMode === "table" ? "active" : ""}>Afficher en Tableau</button>
-          <button onClick={() => setViewMode("chart")} className={viewMode === "chart" ? "active" : ""}>Afficher en Courbe</button>
+          <button
+            onClick={() => setViewMode("table")}
+            className={viewMode === "table" ? "active" : ""}
+          >
+            Afficher en Tableau
+          </button>
+          <button
+            onClick={() => setViewMode("chart")}
+            className={viewMode === "chart" ? "active" : ""}
+          >
+            Afficher en Courbe
+          </button>
         </div>
 
         {viewMode === "table" ? (
@@ -151,19 +208,24 @@ const HydroFilter = () => {
                 <tr>
                   {filtered[0] &&
                     Object.keys(filtered[0])
-                      .filter(col => !months.includes(col) || selectedMonths.includes(col))
+                      .filter(
+                        (col) =>
+                          !months.includes(col) || selectedMonths.includes(col)
+                      )
                       .map((col, idx) => <th key={idx}>{col}</th>)}
-                  {selectedMonths.map((month, idx) =>
-                    !(filtered[0] && Object.keys(filtered[0]).includes(month)) ? <th key={idx}>{month}</th> : null
-                  )}
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((row, i) => (
                   <tr key={i}>
                     {Object.entries(row)
-                      .filter(([col]) => !months.includes(col) || selectedMonths.includes(col))
-                      .map(([_, val], j) => <td key={j}>{val}</td>)}
+                      .filter(
+                        ([col]) =>
+                          !months.includes(col) || selectedMonths.includes(col)
+                      )
+                      .map(([_, val], j) => (
+                        <td key={j}>{val}</td>
+                      ))}
                   </tr>
                 ))}
               </tbody>

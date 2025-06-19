@@ -32,6 +32,62 @@ app.use(
 );
 
 app.use(express.json());
+const XLSX = require("xlsx");
+const ExcelJS = require("exceljs");
+
+
+app.post("/update-dates", async (req, res) => {
+  const { date1, date2 } = req.body;
+  const filePath = path.join(__dirname, "data", "data.xlsx");
+
+  if (!date1 || !date2) {
+    return res.status(400).json({ error: "Deux dates sont requises." });
+  }
+
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(filePath);
+    const sheet = workbook.worksheets[0];
+
+    sheet.getCell("AQ2").value = date1;
+    sheet.getCell("AQ3").value = date2;
+
+    await workbook.xlsx.writeFile(filePath);
+    console.log("✅ AQ2 et AQ3 mises à jour :", date1, date2);
+    res.json({ message: "Dates enregistrées avec succès." });
+  } catch (error) {
+    console.error("❌ Erreur mise à jour Excel :", error);
+    res.status(500).json({ error: "Erreur lors de la mise à jour du fichier Excel." });
+  }
+});
+
+// ✅ Route pour lire et renvoyer le tableau AO5:AS53
+app.get("/get-comparison-table", async (req, res) => {
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(filePath);
+    const sheet = workbook.worksheets[0];
+
+    const rows = [];
+
+    for (let i = 5; i <= 53; i++) {
+      const row = {
+        station: sheet.getCell(`AP${i}`).value,
+        pluie_normale: sheet.getCell(`AQ${i}`).value,
+        pluie_2024: sheet.getCell(`AR${i}`).value,
+        pourcentage: sheet.getCell(`AS${i}`).text, // garde le format (%)
+      };
+      rows.push(row);
+    }
+
+    res.json(rows);
+  } catch (error) {
+    console.error("❌ Erreur lecture Excel :", error);
+    res.status(500).json({ error: "Erreur lors de la lecture du tableau." });
+  }
+});
+
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -47,7 +103,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 const uploadDir = path.join(__dirname, "uploads");
-const stationMap = require('./data/stations.json'); // { "1": "Pont du Mdez (Sebbou)", ... }
 
 // 📤 Upload d’un fichier CSV lié à une station
 app.post("/upload", upload.single("file"), (req, res) => {
@@ -91,10 +146,6 @@ app.get("/api/files/all", (req, res) => {
   });
 });
 
-// 📌 Récupération des stations pour les suggestions
-app.get("/api/stations", (req, res) => {
-  res.json(stationMap);
-});
 
 // 🔍 Recherche avancée : par nom de station et date
 app.post('/api/files/search', async (req, res) => {
