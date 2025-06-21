@@ -68,7 +68,7 @@ app.post("/api/auth/approve-reset", async (req, res) => {
   if (!user) return res.status(404).json({ error: "Utilisateur introuvable." });
 
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "30m" });
-  const resetLink = `https://pfe-abhs.vercel.app/reset-password?token=${token}`;
+  const resetLink = `https://pfe-abhs.web.app/reset-password?token=${token}`;
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
