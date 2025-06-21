@@ -1,100 +1,399 @@
-// HydroFilter.scss
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
-.hydro-filter {
-    padding: 20px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8fafc; // fond très clair
-    width: 100%;
-  
-    h2 {
-      color: #1e3a8a; // bleu foncé
-      font-weight: 700;
-      margin-bottom: 20px;
+$app-bg: #f7fafc;
+$primary: #0077b6;
+$primary-light: #90e0ef;
+$secondary: #023e8a;
+$accent: #00b4d8;
+$text-dark: #023e8a;
+$text-light: #555;
+$border: #ddd;
+$shadow: rgba(0, 0, 0, 0.1);
+$btn-hover: lighten($primary, 10%);
+$btn-active-bg: $primary;
+$btn-active-color: white;
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: $app-bg;
+  font-family: 'Montserrat', sans-serif;
+  color: $text-dark;
+
+  // Sidebar à gauche
+  .sidebar {
+    width: 280px;
+    background-color: $secondary;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    box-shadow: 2px 0 10px $shadow;
+
+    h1 {
+      font-weight: 600;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      color: $primary-light;
+      text-align: center;
+      user-select: none;
     }
-  
+
+    nav {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+
+        &:hover,
+        &.active {
+          background-color: $primary-light;
+          color: $secondary;
+        }
+      }
+    }
+
+    .logout-btn {
+      margin-top: auto;
+      padding: 0.8rem 1rem;
+      background-color: transparent;
+      border: 2px solid $primary-light;
+      color: $primary-light;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: $primary-light;
+        color: $secondary;
+      }
+    }
+  }
+
+  // Zone principale à droite
+  .hydro-filter {
+    flex: 1;
+    padding: 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: $app-bg;
+
+    h2 {
+      font-weight: 600;
+      font-size: 2.5rem;
+      color: $primary;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 3px rgba(0, 119, 182, 0.2);
+    }
+
+    .tab-navigation {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+
+      button {
+        background: transparent;
+        border: 2px solid $primary;
+        color: $primary;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: $primary-light;
+          border-color: $primary-light;
+          color: $secondary;
+        }
+
+        &.active {
+          background-color: $btn-active-bg;
+          color: $btn-active-color;
+          border-color: $btn-active-bg;
+          box-shadow: 0 4px 12px rgba(red($primary), green($primary), blue($primary), 0.4);
+          transform: scale(1.05);
+        }
+      }
+    }
+
     .filters {
       display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1rem;
-  
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+
       > div {
-        min-width: 200px;
-  
-        label {
-          display: block;
-          font-weight: 600;
-          margin-bottom: 6px;
-          color: #334155;
-        }
-  
-        .react-select__control {
-          border-radius: 6px;
-          border-color: #cbd5e1;
-        }
-      }
-    }
-  
-    .view-buttons {
-      margin-bottom: 20px;
-  
-      button {
-        background-color: #1e40af;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        margin-right: 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-  
-        &:hover {
-          background-color: #3b82f6;
-        }
-  
-        &.active {
-          background-color: #2563eb;
+        flex: 1;
+
+        .css-1s2u09g-control,
+        .css-1pahdxg-control {
+          border-radius: 8px;
+          border: 1.8px solid $border;
+          box-shadow: none;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+
+          &:hover {
+            border-color: $primary;
+          }
         }
       }
     }
-  
-    .table-container {
+
+    .data-table {
       overflow-x: auto;
-  
+      max-height: 450px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px $shadow;
+      background: white;
+      padding: 1rem;
+
       table {
         width: 100%;
         border-collapse: collapse;
-        background-color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  
-        th, td {
-          padding: 10px 12px;
-          border: 1px solid #e2e8f0;
-          text-align: left;
-          font-size: 14px;
-          color: #1e293b;
+        font-size: 0.95rem;
+        color: $text-dark;
+
+        thead {
+          background-color: $primary;
+          color: white;
+
+          th {
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+            text-align: left;
+            border-bottom: 2px solid lighten($primary, 15%);
+          }
         }
-  
-        th {
-          background-color: #f1f5f9;
-          font-weight: 700;
-          color: #1e40af;
-        }
-  
-        tr:hover {
-          background-color: #f0f9ff;
+
+        tbody {
+          tr {
+            border-bottom: 1px solid $border;
+            transition: background-color 0.25s ease;
+
+            &:hover {
+              background-color: $primary-light;
+              color: $secondary;
+              font-weight: 600;
+              cursor: default;
+            }
+          }
+
+          td {
+            padding: 0.6rem 1rem;
+          }
         }
       }
     }
-  
-    .chart-container {
-      background-color: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-      max-width: 900px;
-      margin-top: 20px;
+
+    .chart-section {
+      background: white;
+      padding: 2rem 2rem 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px $shadow;
+      margin-bottom: 2rem;
+      min-height: 350px;
+
+      p {
+        color: $text-light;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-top: 100px;
+      }
+    }
+
+    .mapContainer {
+      height: 600px;
+      border-radius: 18px;
+      box-shadow: 0 12px 30px $shadow;
+      margin-top: 2rem;
+
+      .leaflet-container {
+        border-radius: 18px !important;
+      }
+    }
+
+    .comparison-section {
+      margin-top: 2rem;
+      background: white;
+      padding: 1.8rem 2.5rem;
+      border-radius: 14px;
+      box-shadow: 0 12px 25px $shadow;
+
+      .dates-input {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+
+        input {
+          flex: 1;
+          padding: 0.65rem 1rem;
+          border: 1.6px solid $border;
+          border-radius: 10px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+
+          &:focus {
+            outline: none;
+            border-color: $primary;
+            box-shadow: 0 0 5px $primary-light;
+          }
+        }
+
+        button {
+          background-color: $primary;
+          color: white;
+          border: none;
+          padding: 0.7rem 1.8rem;
+          border-radius: 30px;
+          font-weight: 600;
+          font-size: 1.1rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+
+          &:hover {
+            background-color: $btn-hover;
+            transform: scale(1.05);
+          }
+
+          &:active {
+            transform: scale(0.95);
+          }
+        }
+      }
+
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        color: $text-dark;
+
+        thead {
+          background-color: $secondary;
+          color: white;
+
+          th {
+            padding: 0.7rem 1rem;
+            font-weight: 600;
+            border-bottom: 2px solid lighten($secondary, 20%);
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid $border;
+
+            &:nth-child(odd) {
+              background-color: #f9fbfc;
+            }
+
+            td {
+              padding: 0.5rem 1rem;
+              text-align: center;
+            }
+          }
+        }
+      }
     }
   }
-  
+}
+
+// Responsive
+@media (max-width: 1024px) {
+  .app-container {
+    flex-direction: column;
+
+    .sidebar {
+      width: 100%;
+      padding: 1rem 2rem;
+      flex-direction: row;
+      overflow-x: auto;
+
+      nav {
+        flex-direction: row;
+        gap: 1rem;
+      }
+
+      .logout-btn {
+        margin-top: 0;
+        margin-left: auto;
+      }
+    }
+
+    .hydro-filter {
+      padding: 1.5rem 1.8rem;
+
+      .tab-navigation {
+        button {
+          font-size: 1rem;
+          padding: 0.5rem 1rem;
+        }
+      }
+
+      .filters {
+        flex-direction: column;
+        gap: 1rem;
+
+        > div {
+          width: 100% !important;
+        }
+      }
+
+      .mapContainer {
+        height: 450px;
+      }
+
+      .data-table {
+        max-height: 350px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .hydro-filter {
+    padding: 1rem 1rem;
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    .mapContainer {
+      height: 300px;
+    }
+
+    .comparison-section {
+      padding: 1rem 1rem;
+
+      .dates-input {
+        flex-direction: column;
+
+        input,
+        button {
+          width: 100%;
+          font-size: 1rem;
+        }
+      }
+
+      .comparison-table {
+        font-size: 0.85rem;
+
+        thead th,
+        tbody td {
+          padding: 0.4rem 0.6rem;
+        }
+      }
+    }
+  }
+}

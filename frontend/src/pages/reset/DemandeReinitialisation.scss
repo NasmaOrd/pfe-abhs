@@ -1,0 +1,93 @@
+.reset-request {
+  min-height: 100vh;
+  background: url('/images/bassin-sebou.jpeg') no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  .reset-box {
+    width: 100%;
+    max-width: 420px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    padding: 2rem;
+    backdrop-filter: blur(4px);
+    box-sizing: border-box;
+
+    .reset-header {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+
+      h2 {
+        margin: 0 0 1rem;
+        color: #234e70;
+        font-size: 1.6rem;
+      }
+
+      img {
+        width: 80px;
+        height: auto;
+      }
+    }
+
+   form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // centre les éléments horizontalement
+  width: 100%;
+  gap: 1rem;
+
+  input, button {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  input {
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+
+    &:focus {
+      border-color: #234e70;
+      outline: none;
+    }
+  }
+
+  button {
+    padding: 0.8rem;
+    background-color: #234e70;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #1b3a57;
+    }
+  }
+}
+
+
+    .success-msg {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 1.5rem;
+      background-color: #e8fbe8;
+      color: #2d7a2d;
+      padding: 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+  }
+}

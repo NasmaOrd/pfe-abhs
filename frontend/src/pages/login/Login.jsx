@@ -1,7 +1,7 @@
 import "./login.scss";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Hook pour la navigation en React Router v6
+import { Link, useNavigate } from "react-router-dom"; // Hook pour la navigation en React Router v6
 
 /**
  * Composant Login
@@ -61,36 +61,41 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h2>Connexion</h2>
+  <div className="login-box">
+    <h2>Connexion</h2>
 
-      {/* Formulaire de connexion */}
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email :</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+    <form onSubmit={handleLogin}>
+      <div>
+        <label>Email :</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
 
-        <div>
-          <label>Mot de passe :</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+      <div>
+        <label>Mot de passe :</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
 
-        <button type="submit">Se connecter</button>
-      </form>
+      <button type="submit">Se connecter</button>
+    </form>
 
-      {/* Affichage du message d'erreur s'il y en a un */}
-      {error && <p className="error">{error}</p>}
-    </div>
+    <p className="reset-link">
+      <Link to="/demande-reinitialisation">Mot de passe oublié ?</Link>
+    </p>
+
+    {error && <p className="error">{error}</p>}
+  </div>
+</div>
+
   );
 };
 

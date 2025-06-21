@@ -1,123 +1,29 @@
-.stations {
+.app-container {
   display: flex;
-  background-color: #f9f9fb;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  background: #f9f9f9;
+}
 
-  .stationsContainer {
-    flex: 6;
-    padding: 20px 30px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    margin: 20px;
-    box-shadow: 0 6px 15px rgba(100, 81, 248, 0.1);
-    display: flex;
-    flex-direction: column;
+.stations-content {
+  flex-grow: 1;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
 
-    h2 {
-      color: #6451f8;
-      font-weight: 700;
-      font-size: 28px;
-      margin-bottom: 25px;
-    }
-
-    .mapContainer {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(100, 81, 248, 0.15);
-      margin-bottom: 30px;
-
-      .leaflet-container {
-        border-radius: 12px !important;
-      }
-    }
-
-    .stationDetails {
-      background-color: #f5f6fa;
-      border-radius: 12px;
-      padding: 25px 30px;
-      box-shadow: 0 2px 10px rgba(100, 81, 248, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-
-      h3 {
-        color: #3b49c4;
-        font-size: 22px;
-        font-weight: 600;
-        margin-bottom: 10px;
-      }
-
-      p {
-        color: #555c7a;
-        font-size: 15px;
-      }
-
-      ul {
-        list-style: none;
-        padding-left: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        li {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background-color: #ffffff;
-          padding: 10px 15px;
-          border-radius: 8px;
-          box-shadow: 0 1px 4px rgba(100, 81, 248, 0.08);
-          font-size: 14px;
-          color: #444a6d;
-
-          button {
-            background-color: #6451f8;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-
-            &:hover {
-              background-color: #4a3bcc;
-            }
-          }
-        }
-      }
-
-      input[type="file"] {
-        font-size: 14px;
-        color: #6451f8;
-        margin-bottom: 10px;
-      }
-
-      button {
-        background-color: #6451f8;
-        color: white;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 8px;
-        font-weight: 700;
-        width: fit-content;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:disabled {
-          background-color: #a79bf8;
-          cursor: not-allowed;
-        }
-
-        &:not(:disabled):hover {
-          background-color: #4a3bcc;
-        }
-      }
-
-      p[style*="color: red"] {
-        color: #e74c3c !important;
-        font-weight: 600;
-      }
-    }
+  h2 {
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .map-wrapper {
+    flex-grow: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background: white;
   }
 }
+
+/* Si ta Sidebar a des styles spécifiques, garde les dans son dossier */

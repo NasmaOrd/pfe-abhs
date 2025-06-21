@@ -6,6 +6,21 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const authRoutes = require("./routes/auth");
+const User = require('./models/User'); 
+
+// Dépendances supplémentaires
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
+// Schéma ResetRequest
+const ResetRequest = mongoose.model("ResetRequest", new mongoose.Schema({
+  email: String,
+  requestedAt: { type: Date, default: Date.now },
+  approved: { type: Boolean, default: false }
+}));
+
+
 
 dotenv.config();
 
@@ -34,6 +49,85 @@ app.use(
 app.use(express.json());
 const XLSX = require("xlsx");
 const ExcelJS = require("exceljs");
+
+// Route de demande de réinitialisation
+app.post("/api/auth/request-reset", async (req, res) => {
+  const { email } = req.body;
+  const existing = await ResetRequest.findOne({ email, approved: false });
+  if (existing) return res.status(400).json({ error: "Demande déjà en attente." });
+
+  await ResetRequest.create({ email });
+  res.json({ message: "Demande enregistrée. En attente d'approbation." });
+});
+
+// Route admin : approuver une demande et envoyer un email
+app.post("/api/auth/approve-reset", async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ error: "Utilisateur introuvable." });
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "30m" });
+  const resetLink = `https://pfe-abhs.vercel.app/reset-password?token=${token}`;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
+  await transporter.sendMail({
+    from: process.env.MAIL_USER,
+    to: email,
+    subject: "Réinitialisation de mot de passe",
+    html: `<p>Bonjour, cliquez ici pour réinitialiser : <a href="${resetLink}">Réinitialiser le mot de passe</a></p>`,
+  });
+
+  await ResetRequest.updateOne({ email }, { approved: true });
+  res.json({ message: "Lien envoyé avec succès." });
+});
+
+// Route de réinitialisation avec token
+app.post("/api/auth/reset-password", async (req, res) => {
+  const { token } = req.headers;
+  const { newPassword } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await User.findByIdAndUpdate(decoded.id, { password: hashed });
+    res.json({ message: "Mot de passe mis à jour." });
+  } catch (err) {
+    res.status(401).json({ error: "Token invalide ou expiré." });
+  }
+});
+app.get("/api/alertes", async (req, res) => {
+  const enAttente = await ResetRequest.find({ approved: false });
+  res.json(enAttente);
+});
+
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find({}, 'email name active'); // sélectionne ces champs
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur lors de la récupération des utilisateurs.' });
+  }
+});
+
+// Désactiver un utilisateur
+app.put('/api/users/:id/disable', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByIdAndUpdate(userId, { active: false }, { new: true });
+    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+    res.json({ message: "Utilisateur désactivé avec succès." });
+  } catch (err) {
+    res.status(500).json({ error: "Erreur serveur lors de la désactivation." });
+  }
+});
 
 
 app.post("/update-dates", async (req, res) => {

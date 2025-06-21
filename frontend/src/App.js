@@ -16,6 +16,11 @@ import { DarkModeContext } from "./context/darkModeContext";
 import DataSearchPage from "./pages/datasearchpage/DataSearchPage";
 import HydroFilter from "./pages/station/HydroFilter";
 import HydroFilterProvince from "./pages/province/HydroFilterProvince";
+import HydroFilterRegion from "./pages/region/HydroFilterRegion";
+import AlertesReset from "./pages/reset/AlertesReset";
+import DemandeReinitialisation from "./pages/reset/DemandeReinitialisation";
+import ResetPassword from "./pages/reset/ResetPassword";
+import UserList from "./pages/userlist/UserList";
 
 /**
  * @file App.jsx
@@ -64,8 +69,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/">
-            {/* Page d'accueil */}
-            <Route index element={auth ? <Stations/> : <Navigate to="/login" />} />
+            {/* Page d'accueil 
+            <Route index element={auth ? <Stations/> : <Navigate to="/login" />} />*/
+            }
+            <Route path="stations" element={<Stations />} />
+            
 
             {/* Page de login */}
             <Route path="login" element={auth ? <Navigate to="/" /> : <Login />} />
@@ -88,7 +96,12 @@ function App() {
             <Route path="data" element={auth ? <Data /> : <Navigate to="/login" />} />
              <Route path="visualisation" element={<DataSearchPage />} />
              <Route path="station" element={<HydroFilter />} />
-             <Route path="province" element={<HydroFilterProvince />} />
+              <Route path="province" element={<HydroFilterProvince />} />
+              <Route path="region" element={<HydroFilterRegion />} />
+              <Route path="alertes-reset" element={<AlertesReset />} />
+              <Route path="demande-reinitialisation" element={<DemandeReinitialisation />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/user-list" element={<UserList />} />
             <Route path="stations" element={auth ? <Stations /> : <Navigate to="/login" />} />
             <Route path="analyses" element={auth ? <Analyses /> : <Navigate to="/login" />} />
             <Route path="modele" element={auth ? <Modele /> : <Navigate to="/login" />} />

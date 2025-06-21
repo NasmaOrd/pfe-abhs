@@ -28,7 +28,6 @@ ChartJS.register(
   Legend
 );
 
-// Fix Leaflet icons
 // @ts-ignore
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -41,14 +40,15 @@ L.Icon.Default.mergeOptions({
 });
 
 /**
- * @file HydroFilter.jsx
- * @description Composant React pour le filtrage et l'affichage des données hydrologiques par province depuis Google Sheets.
- * Inclut des vues sous forme de tableau, graphique, carte et comparaison entre deux dates.
+ * @file HydroFilterRegion.jsx
+ * @description Composant React pour le filtrage et l'affichage des données hydrologiques par région (avec correspondance province-région).
+ * Inclut des vues sous forme de tableau, graphique, carte et comparaison.
  */
-const HydroFilter = () => {
+const HydroFilterRegion = () => {
   const [data, setData] = useState([]);
-  const [provinces, setProvinces] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [regionMap, setRegionMap] = useState({});
+  const [regions, setRegions] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState(null);
   const [years, setYears] = useState([]);
   const [selectedYears, setSelectedYears] = useState([]);
   const [months] = useState(["Sep", "Oct", "Nov", "Déc", "Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août"]);
@@ -58,22 +58,38 @@ const HydroFilter = () => {
   const [date1, setDate1] = useState("");
   const [date2, setDate2] = useState("");
 
-  /** Récupère les données de la feuille Google Sheet */
+  /** Charge les données de la feuille Google Sheets */
   const fetchFromGoogleSheet = async () => {
     try {
-      const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw/values/Feuil1!A1:Z1000?key=AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs`;
-      const res = await fetch(sheetUrl);
-      const result = await res.json();
-      const headers = result.values[0];
-      const rows = result.values.slice(1);
+      const baseUrl = "https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw";
+      const apiKey = "AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs";
+
+      // Chargement des données principales
+      const dataUrl = `${baseUrl}/values/Feuil1!A1:Z1000?key=${apiKey}`;
+      const dataRes = await fetch(dataUrl);
+      const dataResult = await dataRes.json();
+      const headers = dataResult.values[0];
+      const rows = dataResult.values.slice(1);
       const jsonData = rows.map((row) => {
         const obj = {};
         headers.forEach((key, i) => { obj[key.trim()] = row[i] || ""; });
         return obj;
       });
       setData(jsonData);
-      setProvinces([...new Set(jsonData.map((r) => r["Province:"]))]);
       setYears([...new Set(jsonData.map((r) => r["Année"]))]);
+
+      // Chargement de la correspondance province → région
+      const mappingUrl = `${baseUrl}/values/Feuil1!AA6:AB52?key=${apiKey}`;
+      const mapRes = await fetch(mappingUrl);
+      const mapResult = await mapRes.json();
+      const mapPairs = mapResult.values;
+      const mapObject = {};
+      mapPairs.forEach(([province, region]) => {
+        if (province && region) mapObject[province.trim()] = region.trim();
+      });
+      setRegionMap(mapObject);
+      setRegions([...new Set(Object.values(mapObject))]);
+
     } catch (err) {
       console.error("❌ Erreur chargement Google Sheets:", err);
     }
@@ -83,9 +99,12 @@ const HydroFilter = () => {
     fetchFromGoogleSheet();
   }, []);
 
-  /** Filtre les données selon la province et les années sélectionnées */
   const filterData = () => {
-    return data.filter((row) => (!selectedProvince || row["Province:"] === selectedProvince) && (selectedYears.length === 0 || selectedYears.includes(row["Année"])));
+    return data.filter((row) => {
+      const province = row["Province:"];
+      const region = regionMap[province] || "";
+      return (!selectedRegion || region === selectedRegion) && (selectedYears.length === 0 || selectedYears.includes(row["Année"]));
+    });
   };
 
   const filtered = filterData();
@@ -104,7 +123,9 @@ const HydroFilter = () => {
     })),
   };
 
-  const filteredStations = selectedProvince ? stations.filter((s) => s.province === selectedProvince) : stations;
+  const filteredStations = selectedRegion
+    ? stations.filter((s) => regionMap[s.province] === selectedRegion)
+    : stations;
 
   const sendDatesToServer = async () => {
     try {
@@ -113,7 +134,7 @@ const HydroFilter = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date1, date2 }),
       });
-      const result = await res.json();
+      await res.json();
       fetchComparisonData();
     } catch (err) {
       console.error("Erreur envoi des dates:", err);
@@ -144,20 +165,12 @@ const HydroFilter = () => {
     <div className="app-container" style={{ display: "flex" }}>
       <Sidebar />
       <div className="hydro-filter">
-        <h2>📊 Données Hydrologiques par Province</h2>
+        <h2>Données Hydrologiques par Région</h2>
 
         <div className="tab-navigation">
-          {[
-            { label: "Tableau", value: "tableau" },
-            { label: "Graphique", value: "graphique" },
-            { label: "Carte", value: "carte" },
-          ].map((tab) => (
-            <button
-              key={tab.value}
-              className={viewMode === tab.value ? "active" : ""}
-              onClick={() => setViewMode(tab.value)}
-            >
-              {tab.label}
+          {["tableau", "graphique", "carte"].map((mode) => (
+            <button key={mode} className={viewMode === mode ? "active" : ""} onClick={() => setViewMode(mode)}>
+              {mode.charAt(0).toUpperCase() + mode.slice(1)}
             </button>
           ))}
         </div>
@@ -165,7 +178,7 @@ const HydroFilter = () => {
         {(viewMode === "tableau" || viewMode === "graphique") && (
           <>
             <div className="filters">
-              <Select options={provinces.map((p) => ({ value: p, label: p }))} onChange={(e) => setSelectedProvince(e?.value || null)} isClearable placeholder="Choisir une province" />
+              <Select options={regions.map((r) => ({ value: r, label: r }))} onChange={(e) => setSelectedRegion(e?.value || null)} isClearable placeholder="Choisir une région" />
               <Select options={years.map((y) => ({ value: y, label: y }))} onChange={(e) => setSelectedYears(e ? e.map((i) => i.value) : [])} isMulti placeholder="Années" />
               <Select options={months.map((m) => ({ value: m, label: m }))} onChange={(e) => setSelectedMonths(e ? e.map((i) => i.value) : [])} isMulti placeholder="Mois" />
             </div>
@@ -174,6 +187,7 @@ const HydroFilter = () => {
                 <table>
                   <thead>
                     <tr>
+                      <th>Région</th>
                       <th>Province</th>
                       <th>Année</th>
                       {selectedMonths.map((m, i) => <th key={i}>{m}</th>)}
@@ -182,6 +196,7 @@ const HydroFilter = () => {
                   <tbody>
                     {filtered.map((row, i) => (
                       <tr key={i}>
+                        <td>{regionMap[row["Province:"]]}</td>
                         <td>{row["Province:"]}</td>
                         <td>{row["Année"]}</td>
                         {selectedMonths.map((m, j) => <td key={j}>{parseFloat(row[m])?.toFixed(1) || "-"}</td>)}
@@ -242,4 +257,4 @@ const HydroFilter = () => {
   );
 };
 
-export default HydroFilter;
+export default HydroFilterRegion;

@@ -1,44 +1,63 @@
+// sidebar.scss
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+$primary: #1e40af; // bleu foncé
+$primary-light: #3b82f6; // bleu vif
+$primary-lighter: #e0e7ff; // bleu clair doux
+$secondary: #334155; // bleu gris foncé
+$secondary-light: #64748b; // bleu gris clair
+$bg-white: #ffffff;
+$border-light: #e0e6f1;
+$shadow-light: rgba(100, 115, 150, 0.1);
+
 .sidebar {
-  flex: 0 0 20%;
-  border-right: 1px solid #e0e6f1; // gris très clair
+  flex: 0 0 280px;
   min-height: 100vh;
-  background-color: #ffffff; // blanc pur
-  box-shadow: 2px 0 8px rgba(100, 115, 150, 0.1); // ombre légère
+  background-color: $bg-white;
+  box-shadow: 2px 0 8px $shadow-light;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Montserrat', sans-serif;
+  color: $secondary;
 
   .top {
-    height: 60px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid #e0e6f1;
+    border-bottom: 1px solid $border-light;
+    flex-direction: column;
 
     .logo {
       font-size: 24px;
       font-weight: 700;
-      color: #1e40af; // bleu foncé (taille)
+      color: $primary;
       letter-spacing: 1.2px;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
     }
+
     .logo-img {
       width: 180px;
       height: auto;
-      display: block;
-      margin-top : 20px;
-      padding-top:38px;
+      margin-top: 10px;
+      padding-top: 10px;
+      user-select: none;
     }
-    
   }
 
   hr {
     border: none;
     height: 1px;
-    background-color: #e0e6f1;
+    background-color: $border-light;
     margin: 0 12px;
   }
 
   .center {
+    flex: 1;
     padding: 20px 15px;
-    margin-top:39px;
+    margin-top: 20px;
+    overflow-y: auto;
 
     ul {
       list-style: none;
@@ -48,12 +67,11 @@
       .title {
         font-size: 12px;
         font-weight: 600;
-        color: #64748b; // bleu gris clair
+        color: $secondary-light;
         margin-top: 25px;
         margin-bottom: 10px;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
 
       li {
@@ -63,19 +81,20 @@
         margin-bottom: 8px;
         border-radius: 8px;
         cursor: pointer;
-        color: #334155; // bleu gris foncé
-
+        color: $secondary;
         transition: background-color 0.3s ease, color 0.3s ease;
+        user-select: none;
 
-        &:hover {
-          background-color: #e0e7ff; // bleu clair doux
-          color: #1e40af; // bleu plus foncé
-          box-shadow: inset 4px 0 0 #1e40af; // barre bleue à gauche
+        &:hover,
+        &.active {
+          background-color: $primary-lighter;
+          color: $primary;
+          box-shadow: inset 4px 0 0 $primary;
         }
 
         .icon {
           font-size: 20px;
-          color: #3b82f6; // bleu vif
+          color: $primary-light;
           margin-right: 12px;
           flex-shrink: 0;
         }
@@ -83,8 +102,7 @@
         span {
           font-size: 15px;
           font-weight: 600;
-          color: inherit; // prend la couleur du li
-          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+          color: inherit;
         }
       }
     }
@@ -94,6 +112,7 @@
     display: flex;
     justify-content: center;
     padding: 15px 0;
+    border-top: 1px solid $border-light;
 
     .colorOption {
       width: 28px;
@@ -105,17 +124,17 @@
       transition: border-color 0.3s ease;
 
       &:nth-child(1) {
-        background-color: #e0e7ff; // bleu clair
+        background-color: $primary-lighter;
       }
       &:nth-child(2) {
-        background-color: #3b82f6; // bleu vif
+        background-color: $primary-light;
       }
       &:nth-child(3) {
-        background-color: #1e40af; // bleu foncé
+        background-color: $primary;
       }
 
       &:hover {
-        border-color: #1e40af;
+        border-color: $primary;
       }
     }
   }
