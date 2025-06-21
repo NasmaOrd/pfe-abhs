@@ -12,7 +12,7 @@ const AlertesReset = () => {
   }, []);
 
   const approuver = async (email) => {
-    await axios.post("http://localhost:5000/api/auth/approve-reset", { email });
+    await axios.post("https://pfe-abhs.vercel.app/api/auth/approve-reset", { email });
     alert("Email envoyé.");
     setDemandes(demandes.filter(d => d.email !== email));
   };

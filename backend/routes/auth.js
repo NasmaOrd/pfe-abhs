@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../models/User');  
 
+// Route inscription
 router.post('/register', async (req, res) => {
-  console.log('Register endpoint hit');  
-  const { username, email, password } = req.body;
+  const { username, email, password, name } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -14,23 +14,31 @@ router.post('/register', async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({ 
+      username, 
+      email, 
+      password: hashedPassword,
+      name,           // optionnel
+      active: true    // par défaut true, tu peux l’omettre
+    });
     await newUser.save();
 
     res.status(201).json({ msg: 'User registered successfully' });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 });
 
+// Route login
 router.post('/login', async (req, res) => {
-  console.log('Login endpoint hit');  
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
+
     if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
+    if (!user.active) return res.status(403).json({ msg: 'User account disabled' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
@@ -42,11 +50,12 @@ router.post('/login', async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        name: user.name,
       }
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 });

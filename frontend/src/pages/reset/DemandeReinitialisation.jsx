@@ -8,7 +8,7 @@ const DemandeReinitialisation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://localhost:5000/api/auth/request-reset", { email });
+    const res = await axios.post("https://pfe-abhs.vercel.app/api/auth/request-reset", { email });
     setMsg(res.data.message || "Demande envoyée.");
   };
 

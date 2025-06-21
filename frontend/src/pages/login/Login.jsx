@@ -52,7 +52,7 @@ const Login = () => {
       localStorage.setItem("authToken", token);
 
       // Redirection vers la page d'accueil après connexion
-      navigate("/");
+      navigate("/stations");
     } catch (error) {
       // En cas d'erreur, affichage d'un message à l'utilisateur
       setError("Erreur de connexion. Vérifiez vos informations.");
