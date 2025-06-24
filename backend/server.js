@@ -65,7 +65,12 @@ app.post("/api/auth/approve-reset", async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) return res.status(404).json({ error: "Utilisateur introuvable." });
+
+  if (!user) {
+    // Supprimer la demande même si l'utilisateur n'existe pas
+    await ResetRequest.deleteOne({ email });
+    return res.status(404).json({ error: "Utilisateur introuvable. Demande supprimée." });
+  }
 
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "30m" });
   const resetLink = `https://pfe-abhs.web.app/reset-password?token=${token}`;
@@ -78,16 +83,29 @@ app.post("/api/auth/approve-reset", async (req, res) => {
     },
   });
 
-  await transporter.sendMail({
-    from: process.env.MAIL_USER,
-    to: email,
-    subject: "Réinitialisation de mot de passe",
-    html: `<p>Bonjour, cliquez ici pour réinitialiser : <a href="${resetLink}">Réinitialiser le mot de passe</a></p>`,
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to: email,
+      subject: "Réinitialisation de mot de passe",
+      html: `<p>Bonjour, cliquez ici pour réinitialiser : <a href="${resetLink}">Réinitialiser le mot de passe</a></p>`,
+    });
 
-  await ResetRequest.updateOne({ email }, { approved: true });
-  res.json({ message: "Lien envoyé avec succès." });
+    // Une fois envoyé, on supprime la demande
+    await ResetRequest.deleteOne({ email });
+
+    res.json({ message: "Lien envoyé avec succès. Demande supprimée." });
+
+  } catch (err) {
+    console.error("Erreur lors de l'envoi du mail :", err);
+
+    // On supprime la demande même si le mail échoue
+    await ResetRequest.deleteOne({ email });
+
+    res.status(500).json({ error: "Échec de l'envoi de mail. Demande supprimée." });
+  }
 });
+
 
 // Route de réinitialisation avec token
 app.post("/api/auth/reset-password", async (req, res) => {

@@ -26,7 +26,6 @@ $shadow-light: rgba(100, 115, 150, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid $border-light;
     flex-direction: column;
 
     .logo {
@@ -44,13 +43,6 @@ $shadow-light: rgba(100, 115, 150, 0.1);
       padding-top: 10px;
       user-select: none;
     }
-  }
-
-  hr {
-    border: none;
-    height: 1px;
-    background-color: $border-light;
-    margin: 0 12px;
   }
 
   .center {

@@ -95,8 +95,8 @@ function App() {
             {/* Routes personnalisées pour les modules spécifiques */}
             <Route path="data" element={auth ? <Data /> : <Navigate to="/login" />} />
              <Route path="visualisation" element={<DataSearchPage />} />
-             <Route path="station" element={<HydroFilter />} />
-              <Route path="province" element={<HydroFilterProvince />} />
+             <Route path="province" element={<HydroFilter />} />
+              <Route path="station" element={<HydroFilterProvince />} />
               <Route path="region" element={<HydroFilterRegion />} />
               <Route path="alertes-reset" element={<AlertesReset />} />
               <Route path="demande-reinitialisation" element={<DemandeReinitialisation />} />

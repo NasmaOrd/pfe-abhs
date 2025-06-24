@@ -144,7 +144,7 @@ const HydroFilter = () => {
     <div className="app-container" style={{ display: "flex" }}>
       <Sidebar />
       <div className="hydro-filter">
-        <h2>📊 Données Hydrologiques par Province</h2>
+        <h2>Données Hydrologiques par Province</h2>
 
         <div className="tab-navigation">
           {[

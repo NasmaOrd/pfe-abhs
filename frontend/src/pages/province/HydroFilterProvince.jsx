@@ -210,7 +210,7 @@ const HydroFilterProvince = () => {
     <div className="app-container" style={{ display: "flex" }}>
       <Sidebar />
       <div className="hydro-filter">
-        <h2>Analyse des Données Hydrologiques</h2>
+        <h2>Analyse des Données Hydrologiques Par Station</h2>
 
         <div className="tab-navigation">
           {["tableau", "graphique", "carte", "comparaison"].map((mode) => (
@@ -261,17 +261,20 @@ const HydroFilterProvince = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((row, i) => (
-                      <tr key={i}>
-                        <td>{row["Station"] || row["Nom du poste"]}</td>
-                        <td>{row["Province:"]}</td>
-                        <td>{row["Année"]}</td>
-                        {selectedMonths.map((m, j) => (
-                          <td key={j}>{parseFloat(row[m])?.toFixed(1) || "-"}</td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
+  {filtered.map((row, i) => (
+    <tr key={i}>
+      <td>{row["Station"] || row["Nom du poste"]}</td>
+      <td>{row["Province:"]}</td>
+      <td>{row["Année"]}</td>
+      {selectedMonths.map((m, j) => (
+        <td key={j}>
+          {isNaN(parseFloat(row[m])) ? "-" : parseFloat(row[m]).toFixed(1)}
+        </td>
+      ))}
+    </tr>
+  ))}
+</tbody>
+
                 </table>
               </div>
             )}
@@ -299,23 +302,46 @@ const HydroFilterProvince = () => {
         )}
 
         {viewMode === "carte" && (
-          <div className="mapContainer" style={{ height: "600px", marginTop: "20px" }}>
-            <MapContainer center={[34.1, -5.1]} zoom={9} style={{ height: "100%", width: "100%" }}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              {filteredStations.map((s, i) => (
-                <Marker key={i} position={[s.latitude, s.longitude]}>
-                  <Popup>
-                    <strong>{s.nom}</strong>
-                    <br />
-                    Province: {s.province}
-                    <br />
-                    Altitude: {s.z} m
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-          </div>
-        )}
+  <div className="mapContainer" style={{ height: "600px", marginTop: "20px" }}>
+    {/* Bouton de réinitialisation */}
+    <div style={{ marginBottom: "10px", textAlign: "right" }}>
+      <button
+        onClick={() => {
+          setSelectedProvince(null);
+          setSelectedYears([]);
+          setSelectedMonths([]);
+        }}
+        style={{
+          padding: "8px 12px",
+          backgroundColor: "#e74c3c",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer"
+        }}
+      >
+        Réinitialiser la carte
+      </button>
+    </div>
+
+    {/* Carte Leaflet */}
+    <MapContainer center={[34.1, -5.1]} zoom={9} style={{ height: "100%", width: "100%" }}>
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      {filteredStations.map((s, i) => (
+        <Marker key={i} position={[s.latitude, s.longitude]}>
+          <Popup>
+            <strong>{s.nom}</strong>
+            <br />
+            Province: {s.province}
+            <br />
+            Altitude: {s.z} m
+          </Popup>
+        </Marker>
+      ))}
+    </MapContainer>
+  </div>
+)}
+
 
         {viewMode === "comparaison" && (
           <div className="comparison-section">

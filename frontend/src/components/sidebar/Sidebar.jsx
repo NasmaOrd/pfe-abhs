@@ -24,7 +24,7 @@ const Sidebar = () => {
     const confirmed = window.confirm("Voulez-vous vous déconnecter ?");
     if (confirmed) {
       localStorage.removeItem("authToken");
-      navigate("https://pfe-abhs.web.app/login");
+      navigate("/login");
     }
   };
 
