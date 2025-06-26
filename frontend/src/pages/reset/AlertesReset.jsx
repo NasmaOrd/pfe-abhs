@@ -31,7 +31,6 @@ const AlertesReset = () => {
       setMessageType("error");
     }
 
-    // Supprimer le message après 5 secondes
     setTimeout(() => {
       setMessage("");
       setMessageType("");
@@ -44,21 +43,34 @@ const AlertesReset = () => {
       <main style={{ flex: 1, padding: "20px" }}>
         <h2>Demandes de réinitialisation</h2>
 
-        {/* Message d'état */}
         {message && (
           <div className={`message ${messageType}`}>
             {message}
           </div>
         )}
 
-        <ul className="demandes-list">
-          {demandes.map((d, i) => (
-            <li key={i}>
-              {d.email}
-              <button onClick={() => approuver(d.email)}>Approuver</button>
-            </li>
-          ))}
-        </ul>
+        {demandes.length === 0 ? (
+          <p>Aucune demande en attente.</p>
+        ) : (
+          <table className="demandes-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {demandes.map((d, i) => (
+                <tr key={i}>
+                  <td>{d.email}</td>
+                  <td>
+                    <button onClick={() => approuver(d.email)}>Approuver</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </main>
     </div>
   );

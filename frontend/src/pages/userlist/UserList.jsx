@@ -31,7 +31,7 @@ const UserList = () => {
     setError("");
     setMessage("");
     try {
-      await axios.put(`/api/users/${userId}/disable`);
+      await axios.put(`http://localhost:5000/api/users/${userId}/disable`);
       setMessage("Utilisateur désactivé avec succès.");
       fetchUsers();
     } catch (err) {

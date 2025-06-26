@@ -30,7 +30,7 @@ const Stations = () => {
     <div className="app-container">
       <Sidebar />
       <main className="stations-content">
-        <h2>Bassin du Sebou - Stations Hydrologiques</h2>
+        <h2>Bassin du Sebou</h2>
 
         <div className="map-wrapper">
           <MapContainer

@@ -19,6 +19,7 @@ $btn-active-color: white;
   background-color: $app-bg;
   font-family: 'Montserrat', sans-serif;
   color: $text-dark;
+  overflow: hidden;
 
   // Sidebar à gauche
   .sidebar {
