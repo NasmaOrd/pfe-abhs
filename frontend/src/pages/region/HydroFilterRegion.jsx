@@ -67,6 +67,7 @@ const HydroFilterRegion = () => {
   const [date1, setDate1] = useState("");
   const [date2, setDate2] = useState("");
   const [geoJsonData, setGeoJsonData] = useState(null);
+  const [regionsGeoJson, setRegionsGeoJson] = useState(null); // Nouvel état pour les régions
   const [chartTypes, setChartTypes] = useState([{ value: "line", label: "Line" }]);
 
   const chartRef = useRef(null);
@@ -97,8 +98,15 @@ const HydroFilterRegion = () => {
         setRegionMap(m);
         setRegions([...new Set(Object.values(m))]);
 
-        const geo = await fetch("/sebou_reprojected_wgs84.json").then(r => r.json());
-        setGeoJsonData(geo);
+        // Chargement des deux fichiers GeoJSON
+        const [bassin, regions] = await Promise.all([
+          fetch("/sebou_reprojected_wgs84.json").then(r => r.json()),
+          fetch("/Limites_des_régions.geojson").then(r => r.json())
+        ]);
+        
+        setGeoJsonData(bassin);
+        setRegionsGeoJson(regions);
+
       } catch (e) { console.error(e); }
     };
     fetchData();
@@ -257,9 +265,49 @@ const HydroFilterRegion = () => {
 
         {viewMode==="carte" && (
           <div ref={mapRef} className="mapContainer" style={{height:"600px"}}>
-            <MapContainer center={[34.1,-5.1]} zoom={9} style={{height:"100%",width:"100%"}}>
+            <MapContainer center={[34.1,-5.1]} zoom={7} style={{height:"100%",width:"100%"}}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-              {geoJsonData && <GeoJSON data={geoJsonData} style={{color:"red",weight:2,fillOpacity:0.1}} />}
+              
+              {/* Affichage des régions */}
+              {regionsGeoJson && (
+                <GeoJSON 
+                  data={regionsGeoJson} 
+                  style={{
+                    fillColor: "#e74c3c",
+                    weight: 2,
+                    opacity: 1,
+                    color: "#c0392b",
+                    fillOpacity: 0.2
+                  }}
+                  onEachFeature={(feature, layer) => {
+                    const regionName = feature.properties?.Nom_de_ré || feature.properties?.FIRST_Rég || "Région";
+                    layer.bindTooltip(regionName, {
+                      permanent: false,
+                      direction: 'top'
+                    });
+                    layer.bindPopup(`
+                      <div class="custom-popup">
+                        <h3>${regionName}</h3>
+                        ${feature.properties?.Pop14 ? `<p>Population: ${new Intl.NumberFormat('fr-FR').format(feature.properties.Pop14)}</p>` : ''}
+                      </div>
+                    `);
+                  }}
+                />
+              )}
+              
+              {/* Affichage du bassin */}
+              {geoJsonData && (
+                <GeoJSON 
+                  data={geoJsonData} 
+                  style={{
+                    color: "#3498db",
+                    weight: 2,
+                    fillOpacity: 0.1
+                  }}
+                />
+              )}
+              
+              {/* Affichage des stations */}
               {filteredStations.map((s,i)=>(
                 <Marker key={i} position={[s.latitude,s.longitude]}>
                   <Popup><strong>{s.nom}</strong><br/>Province: {s.province}</Popup>
