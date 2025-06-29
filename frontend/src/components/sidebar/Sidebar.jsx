@@ -5,6 +5,7 @@ import MapIcon from "@mui/icons-material/Map";
 import PlaceIcon from "@mui/icons-material/Place";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows"; // Nouvelle icône pour la comparaison
 
 import { Link, useNavigate } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
@@ -29,7 +30,7 @@ const Sidebar = () => {
   };
 
   /**
-   * Déconnexion automatique à la fermeture de l’onglet.
+   * Déconnexion automatique à la fermeture de l'onglet.
    */
   useEffect(() => {
     const handleUnload = () => {
@@ -70,6 +71,14 @@ const Sidebar = () => {
             <Link to="/region" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
               <MapIcon className="icon" />
               <span>Région</span>
+            </Link>
+          </li>
+
+          {/* Nouvel élément pour la comparaison */}
+          <li>
+            <Link to="/comparaison" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+              <CompareArrowsIcon className="icon" />
+              <span>Situation Hydrologique</span>
             </Link>
           </li>
 

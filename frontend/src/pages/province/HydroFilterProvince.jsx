@@ -373,7 +373,7 @@ const HydroFilterProvince = () => {
         </div>
 
         <div className="tab-navigation">
-          {["tableau", "graphique", "carte", "comparaison"].map((mode) => (
+          {["tableau", "graphique", "carte"].map((mode) => (
             <button
               key={mode}
               className={viewMode === mode ? "active" : ""}
@@ -515,34 +515,25 @@ const HydroFilterProvince = () => {
         {viewMode === "comparaison" && (
           <div className="comparison-section">
             <div className="dates-input">
-              <input
-                type="text"
-                value={date1}
-                onChange={(e) => setDate1(e.target.value)}
-                placeholder="JJ/MM/AAAA"
-              />
-              <input
-                type="text"
-                value={date2}
-                onChange={(e) => setDate2(e.target.value)}
-                placeholder="JJ/MM/AAAA"
-              />
-              <button onClick={sendDatesToServer}>Valider</button>
+              <input value={date1} onChange={e => setDate1(e.target.value)} placeholder="JJ/MM/AAAA" />
+              <input value={date2} onChange={e => setDate2(e.target.value)} placeholder="JJ/MM/AAAA" />
+              <button onClick={async () => {
+                await fetch("http://localhost:5000/update-dates", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ date1, date2 })
+                });
+                const res = await fetch("https://sheets.googleapis.com/v4/spreadsheets/1_JenBcat2ISgihwpHpjAXr-LRHFbXRDQYMl51eIxSxw/values/Feuil1!AO5:AS53?key=AIzaSyDOLJN_Y7moGzrywl7m8NQ5YOPSvxjqgUs");
+                const { values } = await res.json();
+                if (values) {
+                  setComparisonData(values.map((r, i) => i ? [...r.slice(0, 4), `${(parseFloat(r[4].replace("%", "")) * 100).toFixed(1)}%`] : [...r.slice(0, 4), "Déficit"]));
+                }
+              }}>Valider</button>
             </div>
             {comparisonData.length > 0 && (
               <table className="comparison-table">
-                <thead>
-                  <tr>{comparisonData[0].map((h, i) => <th key={i}>{h}</th>)}</tr>
-                </thead>
-                <tbody>
-                  {comparisonData.slice(1).map((row, i) => (
-                    <tr key={i}>
-                      {row.map((cell, j) => (
-                        <td key={j}>{cell}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
+                <thead><tr>{comparisonData[0].map((h, i) => <th key={i}>{h}</th>)}</tr></thead>
+                <tbody>{comparisonData.slice(1).map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j}>{c}</td>)}</tr>)}</tbody>
               </table>
             )}
           </div>

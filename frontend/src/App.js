@@ -21,6 +21,7 @@ import AlertesReset from "./pages/reset/AlertesReset";
 import DemandeReinitialisation from "./pages/reset/DemandeReinitialisation";
 import ResetPassword from "./pages/reset/ResetPassword";
 import UserList from "./pages/userlist/UserList";
+import ComparisonPage from "./pages/comparaison/ComparisonPage";
 
 /**
  * @file App.jsx
@@ -102,6 +103,7 @@ function App() {
               <Route path="demande-reinitialisation" element={<DemandeReinitialisation />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/user-list" element={<UserList />} />
+              <Route path="/comparaison" element={<ComparisonPage />} />
             <Route path="stations" element={auth ? <Stations /> : <Navigate to="/login" />} />
             <Route path="analyses" element={auth ? <Analyses /> : <Navigate to="/login" />} />
             <Route path="modele" element={auth ? <Modele /> : <Navigate to="/login" />} />
