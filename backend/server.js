@@ -152,6 +152,8 @@ app.post("/update-dates", async (req, res) => {
   const { date1, date2 } = req.body;
   const filePath = path.join(__dirname, "data", "data.xlsx");
 
+  console.log(filePath);
+
   if (!date1 || !date2) {
     return res.status(400).json({ error: "Deux dates sont requises." });
   }

@@ -115,7 +115,7 @@ const HydroFilterRegion = () => {
   const filterData = () => {
     return data.filter(r => {
       const prov = r["Province:"], reg = regionMap[prov] || "";
-      return (!selectedRegion || reg === selectedRegion)
+      return r["Oued/Lac"]=="Sebou"&&(!selectedRegion || reg === selectedRegion)
         && (selectedYears.length === 0 || selectedYears.includes(r["Année"]));
     });
   };
@@ -198,7 +198,7 @@ const HydroFilterRegion = () => {
         </div>
 
         <div className="tab-navigation">
-          {["tableau","graphique","carte"].map(mode=>(
+          {["tableau","graphique"].map(mode=>(
             <button key={mode} className={viewMode===mode?"active":""} onClick={()=>setViewMode(mode)}>
               {mode.charAt(0).toUpperCase()+mode.slice(1)}
             </button>

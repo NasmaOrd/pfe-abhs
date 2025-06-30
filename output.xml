@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.3.1 (Python 3.10.0 on win32)" generated="2025-06-27T15:16:42.877115" rpa="false" schemaversion="5">
+<suite id="s1" name="Api Test" source="C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\api_test.robot">
+<test id="s1-t1" name="Test Synchronisation Fichier Valide" line="17">
+<kw name="Préparer Fichier Test" type="SETUP">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2025-06-27T15:16:42.993819" level="INFO">${data} = Nom,Age,Email
+Test1,30,test1@example.com
+Test2,25,test2@example.com</msg>
+<var>${data}</var>
+<arg>Nom,Age,Email\nTest1,30,test1@example.com\nTest2,25,test2@example.com</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2025-06-27T15:16:42.993819" elapsed="0.000000"/>
+</kw>
+<kw name="Create File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:42.993819" level="INFO" html="true">Created file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\test_data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\test_data.xlsx&lt;/a&gt;'.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/${filename}</arg>
+<arg>${data}</arg>
+<doc>Creates a file with the given content and encoding.</doc>
+<status status="PASS" start="2025-06-27T15:16:42.993819" elapsed="0.000000"/>
+</kw>
+<arg>${TEST_EXCEL}</arg>
+<status status="PASS" start="2025-06-27T15:16:42.993819" elapsed="0.000000"/>
+</kw>
+<kw name="Start Process" owner="Process">
+<msg time="2025-06-27T15:16:42.993819" level="INFO">Starting process:
+node server.js</msg>
+<msg time="2025-06-27T15:16:43.009463" level="INFO">${process} = &lt;Popen: returncode: None args: ['node', 'server.js']&gt;</msg>
+<var>${process}</var>
+<arg>node</arg>
+<arg>${SYNC_SCRIPT}</arg>
+<arg>cwd=C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests</arg>
+<doc>Starts a new process on background.</doc>
+<status status="PASS" start="2025-06-27T15:16:42.993819" elapsed="0.017099"/>
+</kw>
+<kw name="Create File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.055862" level="INFO" html="true">Created file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx&lt;/a&gt;'.</msg>
+<arg>${EXCEL_PATH}</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/${TEST_EXCEL}</arg>
+<doc>Creates a file with the given content and encoding.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.010918" elapsed="0.047940"/>
+</kw>
+<kw name="Wait For Process" owner="Process">
+<msg time="2025-06-27T15:16:43.095061" level="INFO">Waiting for process to complete.</msg>
+<msg time="2025-06-27T15:16:43.301766" level="INFO">Process completed.</msg>
+<msg time="2025-06-27T15:16:43.301766" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${process}</arg>
+<arg>timeout=${TEST_TIMEOUT}</arg>
+<doc>Waits for the process to complete or to reach the given timeout.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.095061" elapsed="0.206705"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<msg time="2025-06-27T15:16:43.301766" level="FAIL">'' does not contain '✅ Google Sheet mis à jour'</msg>
+<arg>${result.stdout}</arg>
+<arg>✅ Google Sheet mis à jour</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="FAIL" start="2025-06-27T15:16:43.301766" elapsed="0.000000">'' does not contain '✅ Google Sheet mis à jour'</status>
+</kw>
+<kw name="Nettoyer Fichier Test" type="TEARDOWN">
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.301766" level="INFO" html="true">Removed file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx&lt;/a&gt;'.</msg>
+<arg>${EXCEL_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.301766" elapsed="0.000000"/>
+</kw>
+<arg>Remove File</arg>
+<arg>${EXCEL_PATH}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.301766" elapsed="0.000000"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.301766" level="INFO" html="true">File '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx&lt;/a&gt;' does not exist.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/empty.xlsx</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.301766" elapsed="0.000000"/>
+</kw>
+<arg>Remove File</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/empty.xlsx</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.301766" elapsed="0.000000"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.301766" level="INFO" html="true">File '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx&lt;/a&gt;' does not exist.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/invalid_data.xlsx</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.301766" elapsed="0.000000"/>
+</kw>
+<arg>Remove File</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/invalid_data.xlsx</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.301766" elapsed="0.000000"/>
+</kw>
+<status status="PASS" start="2025-06-27T15:16:43.301766" elapsed="0.000000"/>
+</kw>
+<doc>Vérifie que la synchronisation fonctionne avec un fichier Excel valide</doc>
+<status status="FAIL" start="2025-06-27T15:16:42.993819" elapsed="0.307947">'' does not contain '✅ Google Sheet mis à jour'</status>
+</test>
+<test id="s1-t2" name="Test Fichier Excel Vide" line="33">
+<kw name="Préparer Fichier Test" type="SETUP">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2025-06-27T15:16:43.315333" level="INFO">${data} = Nom,Age,Email
+Test1,30,test1@example.com
+Test2,25,test2@example.com</msg>
+<var>${data}</var>
+<arg>Nom,Age,Email\nTest1,30,test1@example.com\nTest2,25,test2@example.com</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.315333" elapsed="0.000000"/>
+</kw>
+<kw name="Create File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.318335" level="INFO" html="true">Created file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx&lt;/a&gt;'.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/${filename}</arg>
+<arg>${data}</arg>
+<doc>Creates a file with the given content and encoding.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.316337" elapsed="0.001998"/>
+</kw>
+<arg>empty.xlsx</arg>
+<status status="PASS" start="2025-06-27T15:16:43.314337" elapsed="0.004999"/>
+</kw>
+<kw name="Start Process" owner="Process">
+<msg time="2025-06-27T15:16:43.320335" level="INFO">Starting process:
+node server.js</msg>
+<msg time="2025-06-27T15:16:43.334668" level="INFO">${process} = &lt;Popen: returncode: None args: ['node', 'server.js']&gt;</msg>
+<var>${process}</var>
+<arg>node</arg>
+<arg>${SYNC_SCRIPT}</arg>
+<arg>cwd=C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests</arg>
+<doc>Starts a new process on background.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.320335" elapsed="0.014333"/>
+</kw>
+<kw name="Create File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.347740" level="INFO" html="true">Created file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx&lt;/a&gt;'.</msg>
+<arg>${EXCEL_PATH}</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/empty.xlsx</arg>
+<doc>Creates a file with the given content and encoding.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.346428" elapsed="0.004663"/>
+</kw>
+<kw name="Wait For Process" owner="Process">
+<msg time="2025-06-27T15:16:43.358211" level="INFO">Waiting for process to complete.</msg>
+<msg time="2025-06-27T15:16:43.575784" level="INFO">Process completed.</msg>
+<msg time="2025-06-27T15:16:43.577173" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${process}</arg>
+<arg>timeout=${TEST_TIMEOUT}</arg>
+<doc>Waits for the process to complete or to reach the given timeout.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.353672" elapsed="0.223501"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<msg time="2025-06-27T15:16:43.579168" level="FAIL">'' does not contain '⚠️ Fichier Excel vide'</msg>
+<arg>${result.stdout}</arg>
+<arg>⚠️ Fichier Excel vide</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="FAIL" start="2025-06-27T15:16:43.577173" elapsed="0.001995">'' does not contain '⚠️ Fichier Excel vide'</status>
+</kw>
+<kw name="Nettoyer Fichier Test" type="TEARDOWN">
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.581164" level="INFO" html="true">Removed file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx&lt;/a&gt;'.</msg>
+<arg>${EXCEL_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.580167" elapsed="0.000997"/>
+</kw>
+<arg>Remove File</arg>
+<arg>${EXCEL_PATH}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.580167" elapsed="0.002001"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.583167" level="INFO" html="true">Removed file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx&lt;/a&gt;'.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/empty.xlsx</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.582168" elapsed="0.000999"/>
+</kw>
+<arg>Remove File</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/empty.xlsx</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.582168" elapsed="0.000999"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.584168" level="INFO" html="true">File '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx&lt;/a&gt;' does not exist.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/invalid_data.xlsx</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.584168" elapsed="0.000000"/>
+</kw>
+<arg>Remove File</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/invalid_data.xlsx</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.583167" elapsed="0.001001"/>
+</kw>
+<status status="PASS" start="2025-06-27T15:16:43.580167" elapsed="0.004001"/>
+</kw>
+<doc>Teste le comportement avec un fichier Excel vide</doc>
+<status status="FAIL" start="2025-06-27T15:16:43.301766" elapsed="0.283400">'' does not contain '⚠️ Fichier Excel vide'</status>
+</test>
+<test id="s1-t3" name="Test Fichier Non Existant" line="45">
+<kw name="Start Process" owner="Process">
+<msg time="2025-06-27T15:16:43.588173" level="INFO">Starting process:
+node server.js</msg>
+<msg time="2025-06-27T15:16:43.594177" level="INFO">${process} = &lt;Popen: returncode: None args: ['node', 'server.js']&gt;</msg>
+<var>${process}</var>
+<arg>node</arg>
+<arg>${SYNC_SCRIPT}</arg>
+<arg>cwd=C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests</arg>
+<doc>Starts a new process on background.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.587170" elapsed="0.007007"/>
+</kw>
+<kw name="Wait For Process" owner="Process">
+<msg time="2025-06-27T15:16:43.595177" level="INFO">Waiting for process to complete.</msg>
+<msg time="2025-06-27T15:16:43.815676" level="INFO">Process completed.</msg>
+<msg time="2025-06-27T15:16:43.815676" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${process}</arg>
+<arg>timeout=${TEST_TIMEOUT}</arg>
+<doc>Waits for the process to complete or to reach the given timeout.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.594177" elapsed="0.222494"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<msg time="2025-06-27T15:16:43.819671" level="FAIL">'' does not contain '❌ Le fichier Excel n'existe pas'</msg>
+<arg>${result.stdout}</arg>
+<arg>❌ Le fichier Excel n'existe pas</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="FAIL" start="2025-06-27T15:16:43.816671" elapsed="0.003000">'' does not contain '❌ Le fichier Excel n'existe pas'</status>
+</kw>
+<doc>Teste le comportement quand le fichier Excel n'existe pas</doc>
+<status status="FAIL" start="2025-06-27T15:16:43.586168" elapsed="0.234507">'' does not contain '❌ Le fichier Excel n'existe pas'</status>
+</test>
+<test id="s1-t4" name="Test Format Données Invalide" line="52">
+<kw name="Préparer Fichier Test" type="SETUP">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2025-06-27T15:16:43.831724" level="INFO">${data} = Nom,Age,Email
+Test1,30,test1@example.com
+Test2,25,test2@example.com</msg>
+<var>${data}</var>
+<arg>Nom,Age,Email\nTest1,30,test1@example.com\nTest2,25,test2@example.com</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.830727" elapsed="0.000997"/>
+</kw>
+<kw name="Create File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.833729" level="INFO" html="true">Created file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx&lt;/a&gt;'.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/${filename}</arg>
+<arg>${data}</arg>
+<doc>Creates a file with the given content and encoding.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.831724" elapsed="0.002005"/>
+</kw>
+<arg>invalid_data.xlsx</arg>
+<status status="PASS" start="2025-06-27T15:16:43.829730" elapsed="0.004993"/>
+</kw>
+<kw name="Start Process" owner="Process">
+<msg time="2025-06-27T15:16:43.840237" level="INFO">Starting process:
+node server.js</msg>
+<msg time="2025-06-27T15:16:43.861644" level="INFO">${process} = &lt;Popen: returncode: None args: ['node', 'server.js']&gt;</msg>
+<var>${process}</var>
+<arg>node</arg>
+<arg>${SYNC_SCRIPT}</arg>
+<arg>cwd=C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests</arg>
+<doc>Starts a new process on background.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.839190" elapsed="0.022454"/>
+</kw>
+<kw name="Create File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:43.866056" level="INFO" html="true">Created file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx&lt;/a&gt;'.</msg>
+<arg>${EXCEL_PATH}</arg>
+<arg>Fichier non valide</arg>
+<doc>Creates a file with the given content and encoding.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.862841" elapsed="0.003215"/>
+</kw>
+<kw name="Wait For Process" owner="Process">
+<msg time="2025-06-27T15:16:43.873294" level="INFO">Waiting for process to complete.</msg>
+<msg time="2025-06-27T15:16:44.098945" level="INFO">Process completed.</msg>
+<msg time="2025-06-27T15:16:44.098945" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${process}</arg>
+<arg>timeout=${TEST_TIMEOUT}</arg>
+<doc>Waits for the process to complete or to reach the given timeout.</doc>
+<status status="PASS" start="2025-06-27T15:16:43.870971" elapsed="0.227974"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<msg time="2025-06-27T15:16:44.101945" level="FAIL">'' does not contain '❌ Erreur pendant la synchronisation'</msg>
+<arg>${result.stdout}</arg>
+<arg>❌ Erreur pendant la synchronisation</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="FAIL" start="2025-06-27T15:16:44.099948" elapsed="0.001997">'' does not contain '❌ Erreur pendant la synchronisation'</status>
+</kw>
+<kw name="Nettoyer Fichier Test" type="TEARDOWN">
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:44.106121" level="INFO" html="true">Removed file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\data\data.xlsx&lt;/a&gt;'.</msg>
+<arg>${EXCEL_PATH}</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:44.104946" elapsed="0.001175"/>
+</kw>
+<arg>Remove File</arg>
+<arg>${EXCEL_PATH}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:44.103949" elapsed="0.002172"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:44.108127" level="INFO" html="true">File '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\empty.xlsx&lt;/a&gt;' does not exist.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/empty.xlsx</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:44.107134" elapsed="0.000993"/>
+</kw>
+<arg>Remove File</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/empty.xlsx</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:44.107134" elapsed="0.000993"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Remove File" owner="OperatingSystem">
+<msg time="2025-06-27T15:16:44.110130" level="INFO" html="true">Removed file '&lt;a href="file://C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx"&gt;C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\invalid_data.xlsx&lt;/a&gt;'.</msg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/invalid_data.xlsx</arg>
+<doc>Removes a file with the given path.</doc>
+<status status="PASS" start="2025-06-27T15:16:44.109128" elapsed="0.001002"/>
+</kw>
+<arg>Remove File</arg>
+<arg>C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests/invalid_data.xlsx</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-27T15:16:44.109128" elapsed="0.002004"/>
+</kw>
+<status status="PASS" start="2025-06-27T15:16:44.102945" elapsed="0.008187"/>
+</kw>
+<doc>Teste avec un fichier corrompu</doc>
+<status status="FAIL" start="2025-06-27T15:16:43.826728" elapsed="0.289398">'' does not contain '❌ Erreur pendant la synchronisation'</status>
+</test>
+<status status="FAIL" start="2025-06-27T15:16:42.880894" elapsed="1.237561"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="4" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="Api Test" id="s1" pass="0" fail="4" skip="0">Api Test</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
