@@ -178,8 +178,8 @@ const ComparisonPage = () => {
               <table className="comparison-table">
                 <thead>
                   <tr>
-                    <th>Période 1</th>
-                    <th>Période 2</th>
+                    <th>Pluie Normale</th>
+                    <th>Pluie 2024-2025</th>
                     <th>Déficit (%)</th>
                   </tr>
                 </thead>

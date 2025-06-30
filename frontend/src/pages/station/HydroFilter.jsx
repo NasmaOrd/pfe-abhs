@@ -237,7 +237,7 @@ const HydroFilter = () => {
         </div>
 
         <div className="tab-navigation">
-          {["tableau", "graphique", "carte"].map((view) => (
+          {["tableau", "graphique"].map((view) => (
             <button
               key={view}
               className={viewMode === view ? "active" : ""}

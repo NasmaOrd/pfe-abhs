@@ -373,7 +373,7 @@ const HydroFilterProvince = () => {
         </div>
 
         <div className="tab-navigation">
-          {["tableau", "graphique", "carte"].map((mode) => (
+          {["tableau", "graphique"].map((mode) => (
             <button
               key={mode}
               className={viewMode === mode ? "active" : ""}
