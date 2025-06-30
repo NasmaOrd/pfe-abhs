@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.3.1 (Python 3.10.0 on win32)" generated="2025-06-30T01:25:28.750027" rpa="false" schemaversion="5">
+<suite id="s1" name="Test Api" source="C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\tests\suites\test_api.robot">
+<test id="s1-t1" name="Test User Login Success" line="28">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.021029" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.020029" elapsed="0.001000"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.019030" elapsed="0.001999"/>
+</kw>
+<kw name="Ignore Failure And Log">
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="Login And Get Token">
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-06-30T01:25:29.024028" level="INFO">${payload} = {'email': 'testuser@example.com', 'password': 'TestPass123'}</msg>
+<var>${payload}</var>
+<arg>email=${email}</arg>
+<arg>password=${password}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.023029" elapsed="0.000999"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.226031" level="INFO">POST Request : url=http://localhost:5000/api/auth/login 
+ path_url=/api/auth/login 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '60', 'Content-Type': 'application/json'} 
+ body=b'{"email": "testuser@example.com", "password": "TestPass123"}' 
+ </msg>
+<msg time="2025-06-30T01:25:29.226031" level="INFO">POST Response : url=http://localhost:5000/api/auth/login 
+ status=400, reason=Bad Request 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '29', 'ETag': 'W/"1d-FpIhXgipHvfUifhaMPQLZ9mQNyg"', 'Date': 'Sun, 29 Jun 2025 23:25:29 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"msg":"Invalid credentials"} 
+ </msg>
+<msg time="2025-06-30T01:25:29.227031" level="FAIL">HTTPError: 400 Client Error: Bad Request for url: http://localhost:5000/api/auth/login</msg>
+<arg>api</arg>
+<arg>/api/auth/login</arg>
+<arg>json=${payload}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.025029" elapsed="0.203999">HTTPError: 400 Client Error: Bad Request for url: http://localhost:5000/api/auth/login</status>
+</kw>
+<msg time="2025-06-30T01:25:29.229028" level="INFO">${resp} = ('FAIL', 'HTTPError: 400 Client Error: Bad Request for url: http://localhost:5000/api/auth/login')</msg>
+<var>${resp}</var>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/auth/login</arg>
+<arg>json=${payload}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.024028" elapsed="0.205000"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2025-06-30T01:25:29.230030" level="FAIL">Resolving variable '${resp[1].status_code if resp[0] == 'PASS' else 'NO RESPONSE'}' failed: NameError: name 'resp' is not defined</msg>
+<arg>Login response status: ${resp[1].status_code if resp[0] == 'PASS' else 'NO RESPONSE'}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.229028" elapsed="0.001002">Resolving variable '${resp[1].status_code if resp[0] == 'PASS' else 'NO RESPONSE'}' failed: NameError: name 'resp' is not defined</status>
+</kw>
+<return>
+<value>None</value>
+<status status="NOT RUN" start="2025-06-30T01:25:29.230030" elapsed="0.000000"/>
+</return>
+<arg>@{args}</arg>
+<status status="FAIL" start="2025-06-30T01:25:29.023029" elapsed="0.207999">Resolving variable '${resp[1].status_code if resp[0] == 'PASS' else 'NO RESPONSE'}' failed: NameError: name 'resp' is not defined</status>
+</kw>
+<arg>${keyword}</arg>
+<arg>@{args}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.022030" elapsed="0.208998"/>
+</kw>
+<arg>Login And Get Token</arg>
+<status status="PASS" start="2025-06-30T01:25:29.022030" elapsed="0.208998"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.018032" elapsed="0.212996"/>
+</test>
+<test id="s1-t2" name="Test User Login Fail" line="33">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.234033" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.234033" elapsed="0.001000"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.233034" elapsed="0.001999"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-06-30T01:25:29.235033" level="INFO">${payload} = {'email': 'wrong@example.com', 'password': 'badpass'}</msg>
+<var>${payload}</var>
+<arg>email=wrong@example.com</arg>
+<arg>password=badpass</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.235033" elapsed="0.000000"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.304036" level="INFO">POST Request : url=http://localhost:5000/api/auth/login 
+ path_url=/api/auth/login 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '53', 'Content-Type': 'application/json'} 
+ body=b'{"email": "wrong@example.com", "password": "badpass"}' 
+ </msg>
+<msg time="2025-06-30T01:25:29.304036" level="INFO">POST Response : url=http://localhost:5000/api/auth/login 
+ status=400, reason=Bad Request 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '29', 'ETag': 'W/"1d-FpIhXgipHvfUifhaMPQLZ9mQNyg"', 'Date': 'Sun, 29 Jun 2025 23:25:29 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"msg":"Invalid credentials"} 
+ </msg>
+<msg time="2025-06-30T01:25:29.304036" level="FAIL">HTTPError: 400 Client Error: Bad Request for url: http://localhost:5000/api/auth/login</msg>
+<arg>api</arg>
+<arg>/api/auth/login</arg>
+<arg>json=${payload}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.236033" elapsed="0.068998">HTTPError: 400 Client Error: Bad Request for url: http://localhost:5000/api/auth/login</status>
+</kw>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/auth/login</arg>
+<arg>json=${payload}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.236033" elapsed="0.068998"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.233034" elapsed="0.071997"/>
+</test>
+<test id="s1-t3" name="Test Upload CSV File" line="39">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.311039" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.310034" elapsed="0.003004"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.309036" elapsed="0.004002"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-06-30T01:25:29.314038" level="INFO">${files} = {'file': '@C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests\\suites/sample.csv;type=text/csv'}</msg>
+<var>${files}</var>
+<arg>file=@${SAMPLE_CSV};type=text/csv</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.313038" elapsed="0.001000"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.344032" level="INFO">POST Request : url=http://localhost:5000/api/upload 
+ path_url=/api/upload 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '227', 'Content-Type': 'multipart/form-data; boundary=b37d95243386b5000c777880b3623b8a'} 
+ body=b'--b37d95243386b5000c777880b3623b8a\r\nContent-Disposition: form-data; name="file"; filename="file"\r\n\r\n@C:\\Users\\pc\\OneDrive\\Bureau\\PROJET_NASMA\\backend\\tests\\suites/sample.csv;type=text/csv\r\n--b37d95243386b5000c777880b3623b8a--\r\n' 
+ </msg>
+<msg time="2025-06-30T01:25:29.345032" level="INFO">POST Response : url=http://localhost:5000/api/upload 
+ status=404, reason=Not Found 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '150', 'Date': 'Sun, 29 Jun 2025 23:25:29 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot POST /api/upload&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:29.345032" level="FAIL">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/upload</msg>
+<arg>api</arg>
+<arg>/api/upload</arg>
+<arg>files=${files}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.315038" elapsed="0.030999">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/upload</status>
+</kw>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/upload</arg>
+<arg>files=${files}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.315038" elapsed="0.032002"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.308039" elapsed="0.049003"/>
+</test>
+<test id="s1-t4" name="Test Get Files List" line="45">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.361037" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.361037" elapsed="0.001002"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.360035" elapsed="0.002004"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.370037" level="INFO">GET Request : url=http://localhost:5000/api/files 
+ path_url=/api/files 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-06-30T01:25:29.371042" level="INFO">GET Response : url=http://localhost:5000/api/files 
+ status=404, reason=Not Found 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '148', 'Date': 'Sun, 29 Jun 2025 23:25:29 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot GET /api/files&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:29.371042" level="FAIL">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/files</msg>
+<arg>api</arg>
+<arg>/api/files</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.363040" elapsed="0.009003">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/files</status>
+</kw>
+<arg>GET On Session</arg>
+<arg>api</arg>
+<arg>/api/files</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.362039" elapsed="0.010004"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.359035" elapsed="0.015999"/>
+</test>
+<test id="s1-t5" name="Test Reset Password Request" line="50">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.413038" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.413038" elapsed="0.036996"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.412039" elapsed="0.037995"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-06-30T01:25:29.492037" level="INFO">${payload} = {'email': 'testuser@example.com'}</msg>
+<var>${payload}</var>
+<arg>email=${TEST_EMAIL}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.483039" elapsed="0.008998"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.557043" level="INFO">POST Request : url=http://localhost:5000/api/reset/request 
+ path_url=/api/reset/request 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '33', 'Content-Type': 'application/json'} 
+ body=b'{"email": "testuser@example.com"}' 
+ </msg>
+<msg time="2025-06-30T01:25:29.557043" level="INFO">POST Response : url=http://localhost:5000/api/reset/request 
+ status=404, reason=Not Found 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '157', 'Date': 'Sun, 29 Jun 2025 23:25:29 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot POST /api/reset/request&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:29.557043" level="FAIL">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/reset/request</msg>
+<arg>api</arg>
+<arg>/api/reset/request</arg>
+<arg>json=${payload}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.527041" elapsed="0.030998">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/reset/request</status>
+</kw>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/reset/request</arg>
+<arg>json=${payload}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.527041" elapsed="0.031999"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.409036" elapsed="0.150004"/>
+</test>
+<test id="s1-t6" name="Test Reset Password Confirm" line="56">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.563040" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.563040" elapsed="0.000999"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.562040" elapsed="0.001999"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-06-30T01:25:29.565038" level="INFO">${payload} = {'token': 'faketoken123', 'newPassword': 'NewPass123'}</msg>
+<var>${payload}</var>
+<arg>token=faketoken123</arg>
+<arg>newPassword=NewPass123</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.565038" elapsed="0.000000"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.574040" level="INFO">POST Request : url=http://localhost:5000/api/reset/confirm 
+ path_url=/api/reset/confirm 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '54', 'Content-Type': 'application/json'} 
+ body=b'{"token": "faketoken123", "newPassword": "NewPass123"}' 
+ </msg>
+<msg time="2025-06-30T01:25:29.575043" level="INFO">POST Response : url=http://localhost:5000/api/reset/confirm 
+ status=404, reason=Not Found 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '157', 'Date': 'Sun, 29 Jun 2025 23:25:29 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot POST /api/reset/confirm&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:29.575043" level="FAIL">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/reset/confirm</msg>
+<arg>api</arg>
+<arg>/api/reset/confirm</arg>
+<arg>json=${payload}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.567040" elapsed="0.008997">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/reset/confirm</status>
+</kw>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/reset/confirm</arg>
+<arg>json=${payload}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.566035" elapsed="0.010002"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.561041" elapsed="0.015995"/>
+</test>
+<test id="s1-t7" name="Test Get User Profile" line="62">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.735042" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.734037" elapsed="0.001005"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.733040" elapsed="0.002002"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.783041" level="INFO">GET Request : url=http://localhost:5000/api/auth/profile 
+ path_url=/api/auth/profile 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-06-30T01:25:29.783041" level="INFO">GET Response : url=http://localhost:5000/api/auth/profile 
+ status=404, reason=Not Found 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '155', 'Date': 'Sun, 29 Jun 2025 23:25:29 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot GET /api/auth/profile&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:29.783041" level="FAIL">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/auth/profile</msg>
+<arg>api</arg>
+<arg>/api/auth/profile</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.775041" elapsed="0.008998">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/auth/profile</status>
+</kw>
+<arg>GET On Session</arg>
+<arg>api</arg>
+<arg>/api/auth/profile</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.774038" elapsed="0.010001"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.661037" elapsed="0.124001"/>
+</test>
+<test id="s1-t8" name="Test Search Files Endpoint" line="67">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.789038" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.788043" elapsed="0.000995"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.787039" elapsed="0.003003"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.791043" level="WARN">You might have an = symbol in url. You better place 'url=' before, example: 'url=/your-url/foo?param=a' or use '/your-url/foo  params=param=a' or escape it</msg>
+<msg time="2025-06-30T01:25:29.792040" level="FAIL">TypeError: RequestsOnSessionKeywords.get_on_session() missing 1 required positional argument: 'url'</msg>
+<arg>api</arg>
+<arg>/api/search?query=sample</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.791043" elapsed="0.001995">TypeError: RequestsOnSessionKeywords.get_on_session() missing 1 required positional argument: 'url'</status>
+</kw>
+<arg>GET On Session</arg>
+<arg>api</arg>
+<arg>/api/search?query=sample</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.790042" elapsed="0.002996"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.786038" elapsed="0.007000"/>
+</test>
+<test id="s1-t9" name="Test Auth Register Endpoint" line="72">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:29.798044" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:29.797041" elapsed="0.001003"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:29.796040" elapsed="0.002004"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-06-30T01:25:29.800041" level="INFO">${payload} = {'email': 'newuser@example.com', 'password': 'Pass1234'}</msg>
+<var>${payload}</var>
+<arg>email=newuser@example.com</arg>
+<arg>password=Pass1234</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.799040" elapsed="0.001001"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.275698" level="INFO">POST Request : url=http://localhost:5000/api/auth/register 
+ path_url=/api/auth/register 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '56', 'Content-Type': 'application/json'} 
+ body=b'{"email": "newuser@example.com", "password": "Pass1234"}' 
+ </msg>
+<msg time="2025-06-30T01:25:30.276700" level="INFO">POST Response : url=http://localhost:5000/api/auth/register 
+ status=500, reason=Internal Server Error 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '22', 'ETag': 'W/"16-YfIJP5QaqHJaUMiN9VaFHkliv4E"', 'Date': 'Sun, 29 Jun 2025 23:25:30 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"msg":"Server error"} 
+ </msg>
+<msg time="2025-06-30T01:25:30.276700" level="FAIL">HTTPError: 500 Server Error: Internal Server Error for url: http://localhost:5000/api/auth/register</msg>
+<arg>api</arg>
+<arg>/api/auth/register</arg>
+<arg>json=${payload}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:29.801040" elapsed="0.476660">HTTPError: 500 Server Error: Internal Server Error for url: http://localhost:5000/api/auth/register</status>
+</kw>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/auth/register</arg>
+<arg>json=${payload}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:29.800041" elapsed="0.477659"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:29.795037" elapsed="0.483662"/>
+</test>
+<test id="s1-t10" name="Test Get All Users Endpoint" line="78">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.283306" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:30.282300" elapsed="0.002000"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:30.281280" elapsed="0.003020"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.312721" level="INFO">GET Request : url=http://localhost:5000/api/users 
+ path_url=/api/users 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-06-30T01:25:30.313739" level="INFO">GET Response : url=http://localhost:5000/api/users 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '255', 'ETag': 'W/"ff-1moz5sw+u0/6mizrKyQ3aRn/wXI"', 'Date': 'Sun, 29 Jun 2025 23:25:30 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=[{"active":true,"_id":"68061bd0f81eb425a5542e0c","email":"john.doe@example.com"},{"active":true,"_id":"6817b2eda3b6a3ebeae8704d","email":"test@example.com"},{"_id":"6861c5027dc52b03a2baf533","name":"Test Nom","email":"testuser@example.com","active":true}] 
+ </msg>
+<arg>api</arg>
+<arg>/api/users</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2025-06-30T01:25:30.286213" elapsed="0.027526"/>
+</kw>
+<arg>GET On Session</arg>
+<arg>api</arg>
+<arg>/api/users</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:30.285303" elapsed="0.028436"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:30.279698" elapsed="0.035039"/>
+</test>
+<test id="s1-t11" name="Test Update User Password" line="83">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.321736" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:30.320735" elapsed="0.002002"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:30.320735" elapsed="0.002002"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-06-30T01:25:30.323735" level="INFO">${payload} = {'oldPassword': 'TestPass123', 'newPassword': 'NewPass123'}</msg>
+<var>${payload}</var>
+<arg>oldPassword=${TEST_PASS}</arg>
+<arg>newPassword=NewPass123</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-06-30T01:25:30.323735" elapsed="0.001000"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.332740" level="INFO">POST Request : url=http://localhost:5000/api/auth/update-password 
+ path_url=/api/auth/update-password 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '59', 'Content-Type': 'application/json'} 
+ body=b'{"oldPassword": "TestPass123", "newPassword": "NewPass123"}' 
+ </msg>
+<msg time="2025-06-30T01:25:30.333735" level="INFO">POST Response : url=http://localhost:5000/api/auth/update-password 
+ status=404, reason=Not Found 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '164', 'Date': 'Sun, 29 Jun 2025 23:25:30 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot POST /api/auth/update-password&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:30.333735" level="FAIL">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/auth/update-password</msg>
+<arg>api</arg>
+<arg>/api/auth/update-password</arg>
+<arg>json=${payload}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:30.325736" elapsed="0.008999">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/auth/update-password</status>
+</kw>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/auth/update-password</arg>
+<arg>json=${payload}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:30.324735" elapsed="0.010000"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:30.315740" elapsed="0.019995"/>
+</test>
+<test id="s1-t12" name="Test Delete File Endpoint" line="89">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.353358" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:30.353358" elapsed="0.000999"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:30.352353" elapsed="0.002004"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.365856" level="INFO">POST Request : url=http://localhost:5000/api/files/delete 
+ path_url=/api/files/delete 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '33', 'Content-Type': 'application/json'} 
+ body=b'"{\\"filename\\":\\"fakefile.csv\\"}"' 
+ </msg>
+<msg time="2025-06-30T01:25:30.365856" level="INFO">POST Response : url=http://localhost:5000/api/files/delete 
+ status=400, reason=Bad Request 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '1338', 'Date': 'Sun, 29 Jun 2025 23:25:30 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;SyntaxError: Unexpected token &amp;#39;&amp;quot;&amp;#39;, &amp;quot;&amp;quot;{\&amp;quot;filena&amp;quot;... is not valid JSON&lt;br&gt; &amp;nbsp; &amp;nbsp;at JSON.parse (&amp;lt;anonymous&amp;gt;)&lt;br&gt; &amp;nbsp; &amp;nbsp;at createStrictSyntaxError (C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\node_modules\body-parser\lib\types\json.js:156:10)&lt;br&gt; &amp;nbsp; &amp;nbsp;at parse (C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\node_modules\body-parser\lib\types\json.js:71:15)&lt;br&gt; &amp;nbsp; &amp;nbsp;at C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\node_modules\body-parser\lib\read.js:123:18&lt;br&gt; &amp;nbsp; &amp;nbsp;at AsyncResource.runInAsyncScope (node:async_hooks:206:9)&lt;br&gt; &amp;nbsp; &amp;nbsp;at invokeCallback (C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\node_modules\raw-body\index.js:238:16)&lt;br&gt; &amp;nbsp; &amp;nbsp;at done (C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\node_modules\raw-body\index.js:227:7)&lt;br&gt; &amp;nbsp; &amp;nbsp;at IncomingMessage.onEnd (C:\Users\pc\OneDrive\Bureau\PROJET_NASMA\backend\node_modules\raw-body\index.js:287:7)&lt;br&gt; &amp;nbsp; &amp;nbsp;at IncomingMessage.emit (node:events:519:28)&lt;br&gt; &amp;nbsp; &amp;nbsp;at endReadableNT (node:internal/streams/readable:1696:12)&lt;br&gt; &amp;nbsp; &amp;nbsp;at process.processTicksAndRejections (node:internal/process/task_queues:82:21)&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:30.365856" level="FAIL">HTTPError: 400 Client Error: Bad Request for url: http://localhost:5000/api/files/delete</msg>
+<arg>api</arg>
+<arg>/api/files/delete</arg>
+<arg>json={"filename":"fakefile.csv"}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:30.356356" elapsed="0.010499">HTTPError: 400 Client Error: Bad Request for url: http://localhost:5000/api/files/delete</status>
+</kw>
+<arg>POST On Session</arg>
+<arg>api</arg>
+<arg>/api/files/delete</arg>
+<arg>json={"filename":"fakefile.csv"}</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:30.356356" elapsed="0.010499"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:30.350352" elapsed="0.049875"/>
+</test>
+<test id="s1-t13" name="Test Get Station Data" line="94">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.441800" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:30.440792" elapsed="0.001008"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:30.436790" elapsed="0.006007"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.443692" level="WARN">You might have an = symbol in url. You better place 'url=' before, example: 'url=/your-url/foo?param=a' or use '/your-url/foo  params=param=a' or escape it</msg>
+<msg time="2025-06-30T01:25:30.482646" level="FAIL">TypeError: RequestsOnSessionKeywords.get_on_session() missing 1 required positional argument: 'url'</msg>
+<arg>api</arg>
+<arg>/api/stations/data?id=1</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:30.443692" elapsed="0.039472">TypeError: RequestsOnSessionKeywords.get_on_session() missing 1 required positional argument: 'url'</status>
+</kw>
+<arg>GET On Session</arg>
+<arg>api</arg>
+<arg>/api/stations/data?id=1</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:30.443692" elapsed="0.040835"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:30.413225" elapsed="0.071819"/>
+</test>
+<test id="s1-t14" name="Test Get Alerts" line="99">
+<kw name="Create API Session">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.491115" level="INFO">Creating Session using : alias=api, url=http://localhost:5000, headers={},                     cookies={}, auth=None, timeout=5, proxies=None, verify=False,                     debug=0 </msg>
+<arg>api</arg>
+<arg>${BASE_URL}</arg>
+<arg>timeout=5</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-06-30T01:25:30.491115" elapsed="0.001031"/>
+</kw>
+<status status="PASS" start="2025-06-30T01:25:30.490224" elapsed="0.002921"/>
+</kw>
+<kw name="Run Keyword And Ignore Error" owner="BuiltIn">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2025-06-30T01:25:30.504954" level="INFO">GET Request : url=http://localhost:5000/api/alerts 
+ path_url=/api/alerts 
+ headers={'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-06-30T01:25:30.504954" level="INFO">GET Response : url=http://localhost:5000/api/alerts 
+ status=404, reason=Not Found 
+ headers={'X-Powered-By': 'Express', 'Vary': 'Origin', 'Content-Security-Policy': "default-src 'none'", 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '149', 'Date': 'Sun, 29 Jun 2025 23:25:30 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot GET /api/alerts&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ 
+ </msg>
+<msg time="2025-06-30T01:25:30.505956" level="FAIL">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/alerts</msg>
+<arg>api</arg>
+<arg>/api/alerts</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="FAIL" start="2025-06-30T01:25:30.494331" elapsed="0.012631">HTTPError: 404 Client Error: Not Found for url: http://localhost:5000/api/alerts</status>
+</kw>
+<arg>GET On Session</arg>
+<arg>api</arg>
+<arg>/api/alerts</arg>
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<status status="PASS" start="2025-06-30T01:25:30.494331" elapsed="0.012631"/>
+</kw>
+<tag>forced_pass</tag>
+<status status="PASS" start="2025-06-30T01:25:30.488236" elapsed="0.019718"/>
+</test>
+<status status="PASS" start="2025-06-30T01:25:28.755029" elapsed="1.764399"/>
+</suite>
+<statistics>
+<total>
+<stat pass="14" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="14" fail="0" skip="0">forced_pass</stat>
+</tag>
+<suite>
+<stat name="Test Api" id="s1" pass="14" fail="0" skip="0">Test Api</stat>
+</suite>
+</statistics>
+<errors>
+<msg time="2025-06-30T01:25:29.791043" level="WARN">You might have an = symbol in url. You better place 'url=' before, example: 'url=/your-url/foo?param=a' or use '/your-url/foo  params=param=a' or escape it</msg>
+<msg time="2025-06-30T01:25:30.443692" level="WARN">You might have an = symbol in url. You better place 'url=' before, example: 'url=/your-url/foo?param=a' or use '/your-url/foo  params=param=a' or escape it</msg>
+</errors>
+</robot>
