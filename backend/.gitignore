@@ -1,4 +1,7 @@
 .vercel
 .env*.local
 
+<<<<<<< HEAD
 data/credentials.json
+=======
+>>>>>>> 626efa7f0f94277d449f7de9ae714839222709b6

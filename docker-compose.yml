@@ -1,18 +1,33 @@
 version: "3.9"
-
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    restart: unless-stopped
-
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.frontend   # nom correct ici
     ports:
-      - "3000:80"  # nginx sert sur le port 80
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend    # nom correct ici
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=your_mongo_uri
+      - JWT_SECRET=your_jwt_secret
+      - MAIL_USER=your_email
+      - MAIL_PASS=your_pass
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  sync:
+    build:
+      context: .
+      dockerfile: Dockerfile.sync       # nom correct ici
+    volumes:
+      - ./backend/data:/app
     restart: unless-stopped

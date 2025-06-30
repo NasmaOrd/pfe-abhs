@@ -229,13 +229,14 @@ const HydroFilterRegion = () => {
               <div className="data-table" ref={tableRef}>
                 <table>
                   <thead>
-                    <tr><th>Région</th><th>Province</th><th>Année</th>{selectedMonths.map(m=><th key={m}>{m}</th>)}</tr>
+                    <tr><th>Région</th><th>Province</th><th>Oued/Lac</th><th>Année</th>{selectedMonths.map(m=><th key={m}>{m}</th>)}</tr>
                   </thead>
                   <tbody>
                     {filtered.map((r,i)=>(
                       <tr key={i}>
                         <td>{regionMap[r["Province:"]]}</td>
                         <td>{r["Province:"]}</td>
+                        <td>{r["Oued/Lac"]}</td>
                         <td>{r["Année"]}</td>
                         {selectedMonths.map(m=><td key={m}>{parseFloat(r[m])?.toFixed(1)||"-"}</td>)}
                       </tr>
