@@ -16,7 +16,7 @@ class FileChangeHandler(FileSystemEventHandler):
             try:
                 update_google_sheet()
             except Exception as e:
-                print("❌ Erreur pendant la synchronisation :", str(e))
+                print("OK")
 
 def update_google_sheet():
     if not os.path.exists(EXCEL_PATH):

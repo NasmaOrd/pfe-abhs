@@ -37,6 +37,25 @@ const AlertesReset = () => {
     }, 5000);
   };
 
+  const supprimer = async (email) => {
+    try {
+      const res = await axios.delete(`http://localhost:5000/api/alertes/${email}`);
+      setMessage(`🗑️ ${res.data.message || "Demande supprimée avec succès."}`);
+      setMessageType("success");
+      setDemandes(demandes.filter(d => d.email !== email));
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+      const msg = error.response?.data?.error || "❌ Erreur lors de la suppression.";
+      setMessage(msg);
+      setMessageType("error");
+    }
+
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 5000);
+  };
+
   return (
     <div className="app-container">
       <Sidebar />
@@ -56,7 +75,7 @@ const AlertesReset = () => {
             <thead>
               <tr>
                 <th>Email</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -65,6 +84,9 @@ const AlertesReset = () => {
                   <td>{d.email}</td>
                   <td>
                     <button onClick={() => approuver(d.email)}>Approuver</button>
+                    <button onClick={() => supprimer(d.email)} style={{ marginLeft: "10px", backgroundColor: "#dc3545", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}>
+                      Supprimer
+                    </button>
                   </td>
                 </tr>
               ))}

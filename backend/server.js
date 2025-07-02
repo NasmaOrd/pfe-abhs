@@ -134,6 +134,23 @@ app.get('/api/users', async (req, res) => {
     res.status(500).json({ error: 'Erreur serveur lors de la récupération des utilisateurs.' });
   }
 });
+// ❌ Supprimer une alerte de réinitialisation (par email)
+app.delete("/api/alertes/:email", async (req, res) => {
+  const email = req.params.email;
+
+  try {
+    const result = await ResetRequest.deleteOne({ email, approved: false });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Aucune alerte trouvée ou déjà approuvée." });
+    }
+
+    res.json({ message: `Alerte pour ${email} supprimée avec succès.` });
+  } catch (err) {
+    console.error("Erreur lors de la suppression :", err);
+    res.status(500).json({ error: "Erreur serveur lors de la suppression de l'alerte." });
+  }
+});
+
 
 // Désactiver un utilisateur
 app.put('/api/users/:id/disable', async (req, res) => {

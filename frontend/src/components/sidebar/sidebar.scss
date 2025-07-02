@@ -1,7 +1,6 @@
-// sidebar.scss
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
+// ==== VARIABLES ====
 $primary: #1e40af; // bleu foncé
 $primary-light: #3b82f6; // bleu vif
 $primary-lighter: #e0e7ff; // bleu clair doux
@@ -27,14 +26,6 @@ $shadow-light: rgba(100, 115, 150, 0.1);
     align-items: center;
     justify-content: center;
     flex-direction: column;
-
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      color: $primary;
-      letter-spacing: 1.2px;
-      user-select: none;
-    }
 
     .logo-img {
       width: 180px;
@@ -69,6 +60,7 @@ $shadow-light: rgba(100, 115, 150, 0.1);
       li {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         padding: 10px 12px;
         margin-bottom: 8px;
         border-radius: 8px;
@@ -76,6 +68,7 @@ $shadow-light: rgba(100, 115, 150, 0.1);
         color: $secondary;
         transition: background-color 0.3s ease, color 0.3s ease;
         user-select: none;
+        position: relative;
 
         &:hover,
         &.active {
@@ -95,6 +88,54 @@ $shadow-light: rgba(100, 115, 150, 0.1);
           font-size: 15px;
           font-weight: 600;
           color: inherit;
+        }
+
+        .submenu-arrow {
+          margin-left: auto;
+          color: $secondary-light;
+          font-size: 16px;
+        }
+
+        .submenu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background-color: $bg-white;
+          border: 1px solid $border-light;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+          border-radius: 8px;
+          z-index: 100;
+          padding: 5px 0;
+
+          a {
+            display: block;
+            padding: 10px 16px;
+            text-decoration: none;
+            color: $secondary;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background-color: $primary-lighter;
+              color: $primary;
+            }
+          }
+        }
+      }
+
+      .logout-btn {
+        color: $secondary;
+
+        &:hover {
+          background-color: #fee2e2;
+          color: #dc2626;
+          box-shadow: inset 4px 0 0 #dc2626;
+        }
+
+        .icon {
+          color: #dc2626;
         }
       }
     }

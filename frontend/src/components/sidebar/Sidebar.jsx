@@ -5,11 +5,11 @@ import MapIcon from "@mui/icons-material/Map";
 import PlaceIcon from "@mui/icons-material/Place";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows"; // Nouvelle icône pour la comparaison
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import { Link, useNavigate } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 /**
  * Sidebar de navigation avec déconnexion sécurisée.
@@ -17,10 +17,8 @@ import { useContext, useEffect } from "react";
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  /**
-   * Déconnexion manuelle avec confirmation.
-   */
   const handleLogout = () => {
     const confirmed = window.confirm("Voulez-vous vous déconnecter ?");
     if (confirmed) {
@@ -29,14 +27,10 @@ const Sidebar = () => {
     }
   };
 
-  /**
-   * Déconnexion automatique à la fermeture de l'onglet.
-   */
   useEffect(() => {
     const handleUnload = () => {
       localStorage.removeItem("authToken");
     };
-
     window.addEventListener("beforeunload", handleUnload);
     return () => window.removeEventListener("beforeunload", handleUnload);
   }, []);
@@ -74,7 +68,6 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          {/* Nouvel élément pour la comparaison */}
           <li>
             <Link to="/comparaison" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
               <CompareArrowsIcon className="icon" />
@@ -82,11 +75,26 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          <li>
-            <Link to="/alertes-reset" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+          {/* Menu déroulant Alertes */}
+          <li
+            className="dropdown"
+            onMouseEnter={() => setDropdownOpen(true)}
+            onMouseLeave={() => setDropdownOpen(false)}
+          >
+            <div className="dropdown-toggle">
               <NotificationsIcon className="icon" />
               <span>Alertes</span>
-            </Link>
+            </div>
+            {dropdownOpen && (
+              <ul className="dropdown-menu">
+                <li>
+                  <Link to="/alertes-reset" className="dropdown-link">Demandes de reset</Link>
+                </li>
+                <li>
+                  <Link to="/user-list" className="dropdown-link">Liste des utilisateurs</Link>
+                </li>
+              </ul>
+            )}
           </li>
 
           <li className="logout-btn" onClick={handleLogout}>
