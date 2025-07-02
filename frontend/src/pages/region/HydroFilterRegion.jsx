@@ -115,7 +115,7 @@ const HydroFilterRegion = () => {
   const filterData = () => {
     return data.filter(r => {
       const prov = r["Province:"], reg = regionMap[prov] || "";
-      return (!selectedRegion || reg === selectedRegion)
+      return r["Oued/Lac"]=="Sebou"&&(!selectedRegion || reg === selectedRegion)
         && (selectedYears.length === 0 || selectedYears.includes(r["Année"]));
     });
   };
